@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Evaluador Licitación Renovable EDES-LP-GR-01-2025 · v7</title>
+    <title>Evaluador Licitación Renovable EDES-LP-GR-01-2025 · v8</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -1843,6 +1843,7 @@
                     <button class="btn btn-primary" type="button" onclick="guardarCapturaManual()">💾 Guardar ficha</button>
                 </div>
             `;
+            actualizarIndicadoresFichaPendiente();
         }
 
         function seleccionarProyecto(index) {
@@ -1865,10 +1866,16 @@
             renderProjectDetail();
         }
 
+        function actualizarIndicadoresFichaPendiente() {
+            document.querySelectorAll('.pending-pill').forEach(function(el) {
+                el.classList.toggle('show', !!hasUnsavedChanges);
+            });
+        }
+
         function marcarEdicionPendiente() {
             hasUnsavedChanges = true;
             estadoGuardado('Hay cambios pendientes en la ficha seleccionada.');
-            renderProjectDetail();
+            actualizarIndicadoresFichaPendiente();
         }
 
         function actualizarCampoProyecto(index, campo, valor) {
