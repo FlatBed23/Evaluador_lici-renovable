@@ -535,6 +535,18 @@
         }
         
         @media (max-width: 1200px) {
+            .capture-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .project-selector-list {
+                max-height: 300px;
+            }
+
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+
             .grid-2 {
                 grid-template-columns: 1fr;
             }
@@ -586,14 +598,6 @@
             }
         }
     </style>
-
-    <meta name="theme-color" content="#1a4d2e">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="Evaluador">
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icon-180.png">
-
 </head>
 <body>
     <div class="container">
@@ -612,7 +616,7 @@
             <div class="capture-layout">
                 <div>
                     <div class="alert alert-info">
-                        💾 Los parámetros y los datos de proyectos se guardan automáticamente en este navegador mediante localStorage. La plantilla base se carga al abrir el archivo.
+                        💾 Los parámetros y los datos de proyectos se guardan automáticamente en este navegador mediante localStorage. Los datos base del CSV cargado se incluyen por defecto al abrir la app.
                     </div>
 
                     <div class="csv-actions">
@@ -663,7 +667,7 @@
                     <div class="table-toolbar">
                         <div>
                             <h3 style="font-size: 16px; font-weight: 600; color: var(--text);">Datos de proyectos</h3>
-                            <p>Edita MWn, MW mínimo, BESS y PEO directamente en la tabla.</p>
+                            <p>Busca un proyecto y edítalo en formato ficha. La experiencia está optimizada para móvil.</p>
                         </div>
                         <div class="sticky-actions">
                             <button class="btn btn-primary" type="button" onclick="guardarCapturaManual()">💾 Guardar datos</button>
@@ -671,24 +675,22 @@
                         </div>
                     </div>
 
-                    <div class="capture-table-wrapper">
-                        <table class="capture-table">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Proyecto</th>
-                                    <th>Desarrollador</th>
-                                    <th>Semifinalista</th>
-                                    <th>Tecnología</th>
-                                    <th>MWn</th>
-                                    <th>MW mínimo</th>
-                                    <th>BESS MW</th>
-                                    <th>BESS MWh</th>
-                                    <th>PEO</th>
-                                </tr>
-                            </thead>
-                            <tbody id="capture-body"></tbody>
-                        </table>
+                    <div class="finder-bar">
+                        <div class="form-group" style="margin-bottom:0; flex:1;">
+                            <label for="project-search">Buscar proyecto o desarrollador</label>
+                            <input type="text" id="project-search" placeholder="Ej. Esperanza, EGE Haina, AES" oninput="actualizarBusquedaProyecto(this.value)">
+                        </div>
+                        <button class="btn btn-secondary btn-small" type="button" onclick="limpiarBusquedaProyecto()">Limpiar búsqueda</button>
+                    </div>
+
+                    <div class="capture-layout">
+                        <div class="project-selector-panel">
+                            <div id="project-count" class="selector-meta"></div>
+                            <div id="project-selector-list" class="project-selector-list"></div>
+                        </div>
+                        <div class="project-detail-panel">
+                            <div id="project-detail" class="project-detail"></div>
+                        </div>
                     </div>
 
                     <div id="save-status" class="status-text" style="margin-top: 12px;">Sin cambios recientes.</div>
@@ -817,10 +819,12 @@
         let capacityChart = null;
         let meritChart = null;
         let waterfallChart = null;
+        let selectedProjectIndex = 0;
+        let projectSearchQuery = '';
 
         const STORAGE_KEYS = {
-            proyectos: 'evaluador_renovable_proyectos_v2',
-            parametros: 'evaluador_renovable_parametros_v2'
+            proyectos: 'evaluador_renovable_proyectos_v3',
+            parametros: 'evaluador_renovable_parametros_v3'
         };
 
         // Constantes
@@ -831,32 +835,282 @@
 
         // Plantilla base de proyectos
         const proyectosPlantilla = [
-            {nombre: "Las Parras Energy", desarrollador: "MEDCAP", semifinalista: "No", tecnologia: "solar"},
-            {nombre: "Dicayagua Solar Park", desarrollador: "MAGNETAR", semifinalista: "Si", tecnologia: "solar"},
-            {nombre: "Pimentel Energy", desarrollador: "MEDCAP", semifinalista: "No", tecnologia: "solar"},
-            {nombre: "Mella Solar Project", desarrollador: "Mella Solar Power", semifinalista: "Si", tecnologia: "solar"},
-            {nombre: "Parque Solar Dominicana Azul II", desarrollador: "Zenith", semifinalista: "Si", tecnologia: "solar"},
-            {nombre: "Helios Solar Park", desarrollador: "HELIOS", semifinalista: "No", tecnologia: "solar"},
-            {nombre: "Parque Solar Taíno I", desarrollador: "Taino", semifinalista: "Si", tecnologia: "solar"},
-            {nombre: "Ardavin Solar", desarrollador: "MAGNETAR", semifinalista: "Si", tecnologia: "solar"},
-            {nombre: "Parque Solar Dominicana Azul", desarrollador: "Zenith", semifinalista: "Si", tecnologia: "solar"},
-            {nombre: "Peravia Solar II", desarrollador: "AES", semifinalista: "Si", tecnologia: "solar"},
-            {nombre: "Parque Solar Santa Clara", desarrollador: "Santa Clara", semifinalista: "Si", tecnologia: "solar"},
-            {nombre: "Parque Solar El Guincho", desarrollador: "AKUO", semifinalista: "Si", tecnologia: "solar"},
-            {nombre: "WCGFV - Mata de Palma", desarrollador: "BASS - Dominion", semifinalista: "Si", tecnologia: "solar"},
-            {nombre: "Planta Solar Fotovoltaica Solsur", desarrollador: "Solsur Company", semifinalista: "Si", tecnologia: "solar"},
-            {nombre: "Parque Solar Montecristi II", desarrollador: "Montecristi Solar FV", semifinalista: "No", tecnologia: "solar"},
-            {nombre: "Parque Solar Payita II", desarrollador: "ECOENER", semifinalista: "Si", tecnologia: "solar"},
-            {nombre: "Parque Eólico Esperanza", desarrollador: "EGE Haina", semifinalista: "Si", tecnologia: "eolica"},
-            {nombre: "Parque Solar Tornasol", desarrollador: "EGE Haina", semifinalista: "Si", tecnologia: "solar"},
-            {nombre: "Parque Solar Esperanza II", desarrollador: "EGE Haina", semifinalista: "Si", tecnologia: "solar"},
-            {nombre: "Parque Solar Girasol II", desarrollador: "EGE Haina", semifinalista: "Si", tecnologia: "solar"},
-            {nombre: "WCGFIV - Mata de Palma", desarrollador: "BASS - Dominion", semifinalista: "Si", tecnologia: "solar"},
-            {nombre: "Guayubin Solar I", desarrollador: "BASS - Dominion", semifinalista: "Si", tecnologia: "solar"},
-            {nombre: "Guayubin Solar II", desarrollador: "BASS - Dominion", semifinalista: "No", tecnologia: "solar"},
-            {nombre: "Eco Sur (Parque Solar Eco Este)", desarrollador: "RAAS SOLAR, S.R.L.", semifinalista: "Si", tecnologia: "solar"},
-            {nombre: "Parque Fotovoltaico Botoncillo", desarrollador: "Galileo Energia", semifinalista: "Si", tecnologia: "solar"}
-        ];
+            {
+                        "nombre": "Las Parras Energy",
+                        "desarrollador": "MEDCAP",
+                        "semifinalista": false,
+                        "tecnologia": "solar",
+                        "mwn": 248.4,
+                        "capacidadMin": 248.4,
+                        "besMW": 124.2,
+                        "besMWh": 496.8,
+                        "peo": 0.0881
+            },
+            {
+                        "nombre": "Dicayagua Solar Park",
+                        "desarrollador": "MAGNETAR",
+                        "semifinalista": true,
+                        "tecnologia": "solar",
+                        "mwn": 145.0,
+                        "capacidadMin": 145.0,
+                        "besMW": 72.5,
+                        "besMWh": 290.0,
+                        "peo": 0.1131
+            },
+            {
+                        "nombre": "Pimentel Energy",
+                        "desarrollador": "MEDCAP",
+                        "semifinalista": false,
+                        "tecnologia": "solar",
+                        "mwn": 119.6,
+                        "capacidadMin": 119.6,
+                        "besMW": 59.8,
+                        "besMWh": 239.2,
+                        "peo": 0.0987
+            },
+            {
+                        "nombre": "Mella Solar Project",
+                        "desarrollador": "Mella Solar Power",
+                        "semifinalista": true,
+                        "tecnologia": "solar",
+                        "mwn": 99.0,
+                        "capacidadMin": 99.0,
+                        "besMW": 49.5,
+                        "besMWh": 198.0,
+                        "peo": 0.1135
+            },
+            {
+                        "nombre": "Parque Solar Dominicana Azul II",
+                        "desarrollador": "Zenith",
+                        "semifinalista": true,
+                        "tecnologia": "solar",
+                        "mwn": 96.8,
+                        "capacidadMin": 96.8,
+                        "besMW": 48.4,
+                        "besMWh": 193.6,
+                        "peo": 0.1249
+            },
+            {
+                        "nombre": "Helios Solar Park",
+                        "desarrollador": "HELIOS",
+                        "semifinalista": false,
+                        "tecnologia": "solar",
+                        "mwn": 92.4,
+                        "capacidadMin": 92.4,
+                        "besMW": 46.2,
+                        "besMWh": 184.8,
+                        "peo": 0.122
+            },
+            {
+                        "nombre": "Parque Solar Taíno I",
+                        "desarrollador": "Taino",
+                        "semifinalista": true,
+                        "tecnologia": "solar",
+                        "mwn": 84.7,
+                        "capacidadMin": 84.7,
+                        "besMW": 42.35,
+                        "besMWh": 169.4,
+                        "peo": 0.1151
+            },
+            {
+                        "nombre": "Ardavin Solar",
+                        "desarrollador": "MAGNETAR",
+                        "semifinalista": true,
+                        "tecnologia": "solar",
+                        "mwn": 83.4,
+                        "capacidadMin": 83.4,
+                        "besMW": 41.7,
+                        "besMWh": 166.8,
+                        "peo": 0.1029
+            },
+            {
+                        "nombre": "Parque Solar Dominicana Azul",
+                        "desarrollador": "Zenith",
+                        "semifinalista": true,
+                        "tecnologia": "solar",
+                        "mwn": 82.9,
+                        "capacidadMin": 82.9,
+                        "besMW": 41.44,
+                        "besMWh": 165.76,
+                        "peo": 0.0978
+            },
+            {
+                        "nombre": "Peravia Solar II",
+                        "desarrollador": "AES",
+                        "semifinalista": true,
+                        "tecnologia": "solar",
+                        "mwn": 70.0,
+                        "capacidadMin": 70.0,
+                        "besMW": 35.0,
+                        "besMWh": 140.0,
+                        "peo": 0.0909
+            },
+            {
+                        "nombre": "Parque Solar Santa Clara",
+                        "desarrollador": "Santa Clara",
+                        "semifinalista": true,
+                        "tecnologia": "solar",
+                        "mwn": 67.7,
+                        "capacidadMin": 67.7,
+                        "besMW": 33.85,
+                        "besMWh": 135.4,
+                        "peo": 0.1098
+            },
+            {
+                        "nombre": "Parque Solar El Guincho",
+                        "desarrollador": "AKUO",
+                        "semifinalista": true,
+                        "tecnologia": "solar",
+                        "mwn": 65.0,
+                        "capacidadMin": 65.0,
+                        "besMW": 32.5,
+                        "besMWh": 130.0,
+                        "peo": 0.0846
+            },
+            {
+                        "nombre": "WCGFV - Mata de Palma",
+                        "desarrollador": "BASS - Dominion",
+                        "semifinalista": true,
+                        "tecnologia": "solar",
+                        "mwn": 54.6,
+                        "capacidadMin": 54.6,
+                        "besMW": 27.28,
+                        "besMWh": 109.12,
+                        "peo": 0.102
+            },
+            {
+                        "nombre": "Planta Solar Fotovoltaica Solsur",
+                        "desarrollador": "Solsur Company",
+                        "semifinalista": true,
+                        "tecnologia": "solar",
+                        "mwn": 50.0,
+                        "capacidadMin": 50.0,
+                        "besMW": 25.0,
+                        "besMWh": 100.0,
+                        "peo": 0.0985
+            },
+            {
+                        "nombre": "Parque Solar Montecristi II",
+                        "desarrollador": "Montecristi Solar FV",
+                        "semifinalista": false,
+                        "tecnologia": "solar",
+                        "mwn": 50.0,
+                        "capacidadMin": 50.0,
+                        "besMW": 25.0,
+                        "besMWh": 100.0,
+                        "peo": 0.1041
+            },
+            {
+                        "nombre": "Parque Solar Payita II",
+                        "desarrollador": "ECOENER",
+                        "semifinalista": true,
+                        "tecnologia": "solar",
+                        "mwn": 50.0,
+                        "capacidadMin": 50.0,
+                        "besMW": 24.99,
+                        "besMWh": 99.96,
+                        "peo": 0.0854
+            },
+            {
+                        "nombre": "Parque Eólico Esperanza",
+                        "desarrollador": "EGE Haina",
+                        "semifinalista": true,
+                        "tecnologia": "eolica",
+                        "mwn": 49.5,
+                        "capacidadMin": 49.5,
+                        "besMW": 25.0,
+                        "besMWh": 100.0,
+                        "peo": 0.0987
+            },
+            {
+                        "nombre": "Parque Solar Tornasol",
+                        "desarrollador": "EGE Haina",
+                        "semifinalista": true,
+                        "tecnologia": "solar",
+                        "mwn": 48.3,
+                        "capacidadMin": 48.3,
+                        "besMW": 25.0,
+                        "besMWh": 100.0,
+                        "peo": 0.1065
+            },
+            {
+                        "nombre": "Parque Solar Esperanza II",
+                        "desarrollador": "EGE Haina",
+                        "semifinalista": true,
+                        "tecnologia": "solar",
+                        "mwn": 48.3,
+                        "capacidadMin": 48.3,
+                        "besMW": 25.0,
+                        "besMWh": 100.0,
+                        "peo": 0.0867
+            },
+            {
+                        "nombre": "Parque Solar Girasol II",
+                        "desarrollador": "EGE Haina",
+                        "semifinalista": true,
+                        "tecnologia": "solar",
+                        "mwn": 48.3,
+                        "capacidadMin": 48.3,
+                        "besMW": 25.0,
+                        "besMWh": 100.0,
+                        "peo": 0.1055
+            },
+            {
+                        "nombre": "WCGFIV - Mata de Palma",
+                        "desarrollador": "BASS - Dominion",
+                        "semifinalista": true,
+                        "tecnologia": "solar",
+                        "mwn": 48.1,
+                        "capacidadMin": 48.1,
+                        "besMW": 24.06,
+                        "besMWh": 96.24,
+                        "peo": 0.0916
+            },
+            {
+                        "nombre": "Guayubin Solar I",
+                        "desarrollador": "BASS - Dominion",
+                        "semifinalista": true,
+                        "tecnologia": "solar",
+                        "mwn": 44.7,
+                        "capacidadMin": 44.7,
+                        "besMW": 22.34,
+                        "besMWh": 89.36,
+                        "peo": 0.1111
+            },
+            {
+                        "nombre": "Guayubin Solar II",
+                        "desarrollador": "BASS - Dominion",
+                        "semifinalista": false,
+                        "tecnologia": "solar",
+                        "mwn": 44.7,
+                        "capacidadMin": 44.7,
+                        "besMW": 22.34,
+                        "besMWh": 89.36,
+                        "peo": 0.0868
+            },
+            {
+                        "nombre": "Eco Sur (Parque Solar Eco Este)",
+                        "desarrollador": "RAAS SOLAR, S.R.L.",
+                        "semifinalista": true,
+                        "tecnologia": "solar",
+                        "mwn": 39.4,
+                        "capacidadMin": 39.4,
+                        "besMW": 19.71,
+                        "besMWh": 78.84,
+                        "peo": 0.1237
+            },
+            {
+                        "nombre": "Parque Fotovoltaico Botoncillo",
+                        "desarrollador": "Galileo Energia",
+                        "semifinalista": true,
+                        "tecnologia": "solar",
+                        "mwn": 44.2,
+                        "capacidadMin": 44.2,
+                        "besMW": 22.1,
+                        "besMWh": 88.4,
+                        "peo": 0.0896
+            }
+];
 
         function crearProyectoDesdePlantilla(base, index) {
             return {
@@ -954,37 +1208,153 @@
                 proyectos = obtenerPlantillaInicial();
             }
 
+            selectedProjectIndex = 0;
             renderTablaCaptura();
             actualizarResumen();
-            estadoGuardado(cargados ? 'Datos restaurados desde este navegador.' : 'Plantilla base cargada.');
+            estadoGuardado(cargados ? 'Datos restaurados desde este navegador.' : 'Datos base precargados.');
         }
 
         function renderTablaCaptura() {
-            const tbody = document.getElementById('capture-body');
-            if (!tbody) return;
+            renderProjectSelector();
+            renderProjectDetail();
+        }
 
-            tbody.innerHTML = proyectos.map((proyecto, index) => `
-                <tr>
-                    <td>${index + 1}</td>
-                    <td class="project-name">${proyecto.nombre}</td>
-                    <td class="developer-name">${proyecto.desarrollador}</td>
-                    <td style="text-align:center;">
-                        <input type="checkbox" ${proyecto.semifinalista ? 'checked' : ''}
-                            onchange="actualizarCampoProyecto(${index}, 'semifinalista', this.checked)">
-                    </td>
-                    <td>
-                        <select onchange="actualizarCampoProyecto(${index}, 'tecnologia', this.value)">
+        function obtenerIndicesFiltrados() {
+            const q = projectSearchQuery.trim().toLowerCase();
+            return proyectos
+                .map((proyecto, index) => ({ proyecto, index }))
+                .filter(({ proyecto }) => {
+                    if (!q) return true;
+                    return proyecto.nombre.toLowerCase().includes(q) || proyecto.desarrollador.toLowerCase().includes(q);
+                })
+                .map(({ index }) => index);
+        }
+
+        function renderProjectSelector() {
+            const container = document.getElementById('project-selector-list');
+            const meta = document.getElementById('project-count');
+            if (!container || !meta) return;
+
+            const filteredIndexes = obtenerIndicesFiltrados();
+
+            if (!filteredIndexes.length) {
+                meta.textContent = '0 proyectos visibles';
+                container.innerHTML = '<div class="empty-search-state">No hay proyectos que coincidan con la búsqueda.</div>';
+                return;
+            }
+
+            if (!filteredIndexes.includes(selectedProjectIndex)) {
+                selectedProjectIndex = filteredIndexes[0];
+            }
+
+            meta.textContent = `${filteredIndexes.length} proyecto${filteredIndexes.length === 1 ? '' : 's'} visible${filteredIndexes.length === 1 ? '' : 's'}`;
+
+            container.innerHTML = filteredIndexes.map((index) => {
+                const proyecto = proyectos[index];
+                const activeClass = index === selectedProjectIndex ? 'active' : '';
+                const egeClass = proyecto.desarrollador === 'EGE Haina' ? 'ege-highlight' : '';
+                const datosCompletos = [proyecto.mwn, proyecto.capacidadMin, proyecto.besMW, proyecto.besMWh, proyecto.peo].every(v => v !== null && v !== undefined && v !== '');
+                return `
+                    <button type="button" class="project-selector-item ${activeClass} ${egeClass}" onclick="seleccionarProyecto(${index})">
+                        <div class="selector-name">${proyecto.nombre}</div>
+                        <div class="selector-subtitle">${proyecto.desarrollador}</div>
+                        <div class="selector-tags">
+                            <span class="badge ${proyecto.tecnologia === 'solar' ? 'badge-solar' : 'badge-eolica'}">${proyecto.tecnologia === 'solar' ? '☀️ Solar' : '💨 Eólica'}</span>
+                            <span class="badge ${proyecto.semifinalista ? 'badge-success' : 'badge-danger'}">${proyecto.semifinalista ? 'Semifinalista' : 'No semifinalista'}</span>
+                            <span class="badge ${datosCompletos ? 'badge-info' : 'badge-warning'}">${datosCompletos ? 'Datos completos' : 'Revisar datos'}</span>
+                        </div>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function renderProjectDetail() {
+            const container = document.getElementById('project-detail');
+            if (!container) return;
+            const proyecto = proyectos[selectedProjectIndex];
+
+            if (!proyecto) {
+                container.innerHTML = '<div class="project-detail-empty">Selecciona un proyecto para editar su ficha.</div>';
+                return;
+            }
+
+            const indiceVisible = selectedProjectIndex + 1;
+            const duracion = (proyecto.besMW && proyecto.besMWh) ? (proyecto.besMWh / proyecto.besMW) : null;
+            const isEGE = proyecto.desarrollador === 'EGE Haina';
+
+            container.innerHTML = `
+                <div class="project-detail-header">
+                    <div>
+                        <div class="project-detail-title">${proyecto.nombre}</div>
+                        <div class="project-detail-subtitle">${proyecto.desarrollador} · Proyecto #${indiceVisible}</div>
+                    </div>
+                    <div class="selector-tags">
+                        <span class="badge ${proyecto.tecnologia === 'solar' ? 'badge-solar' : 'badge-eolica'}">${proyecto.tecnologia === 'solar' ? '☀️ Solar' : '💨 Eólica'}</span>
+                        ${isEGE ? '<span class="badge badge-success">EGE Haina</span>' : ''}
+                    </div>
+                </div>
+                <div class="detail-grid">
+                    <div class="detail-field">
+                        <label>Semifinalista</label>
+                        <select onchange="actualizarCampoProyecto(${selectedProjectIndex}, 'semifinalista', this.value === 'true')">
+                            <option value="true" ${proyecto.semifinalista ? 'selected' : ''}>Sí</option>
+                            <option value="false" ${!proyecto.semifinalista ? 'selected' : ''}>No</option>
+                        </select>
+                    </div>
+                    <div class="detail-field">
+                        <label>Tecnología</label>
+                        <select onchange="actualizarCampoProyecto(${selectedProjectIndex}, 'tecnologia', this.value)">
                             <option value="solar" ${proyecto.tecnologia === 'solar' ? 'selected' : ''}>Solar</option>
                             <option value="eolica" ${proyecto.tecnologia === 'eolica' ? 'selected' : ''}>Eólica</option>
                         </select>
-                    </td>
-                    <td><input type="number" step="0.01" inputmode="decimal" value="${proyecto.mwn ?? ''}" onchange="actualizarCampoProyecto(${index}, 'mwn', this.value)" oninput="marcarEdicionPendiente()"></td>
-                    <td><input type="number" step="0.01" inputmode="decimal" value="${proyecto.capacidadMin ?? ''}" onchange="actualizarCampoProyecto(${index}, 'capacidadMin', this.value)" oninput="marcarEdicionPendiente()"></td>
-                    <td><input type="number" step="0.01" inputmode="decimal" value="${proyecto.besMW ?? ''}" onchange="actualizarCampoProyecto(${index}, 'besMW', this.value)" oninput="marcarEdicionPendiente()"></td>
-                    <td><input type="number" step="0.01" inputmode="decimal" value="${proyecto.besMWh ?? ''}" onchange="actualizarCampoProyecto(${index}, 'besMWh', this.value)" oninput="marcarEdicionPendiente()"></td>
-                    <td><input type="number" step="0.000001" inputmode="decimal" value="${proyecto.peo ?? ''}" onchange="actualizarCampoProyecto(${index}, 'peo', this.value)" oninput="marcarEdicionPendiente()"></td>
-                </tr>
-            `).join('');
+                    </div>
+                    <div class="detail-field">
+                        <label>MWn</label>
+                        <input type="number" step="0.01" inputmode="decimal" value="${proyecto.mwn ?? ''}" onchange="actualizarCampoProyecto(${selectedProjectIndex}, 'mwn', this.value)" oninput="marcarEdicionPendiente()">
+                    </div>
+                    <div class="detail-field">
+                        <label>MW mínimo</label>
+                        <input type="number" step="0.01" inputmode="decimal" value="${proyecto.capacidadMin ?? ''}" onchange="actualizarCampoProyecto(${selectedProjectIndex}, 'capacidadMin', this.value)" oninput="marcarEdicionPendiente()">
+                    </div>
+                    <div class="detail-field">
+                        <label>BESS MW</label>
+                        <input type="number" step="0.01" inputmode="decimal" value="${proyecto.besMW ?? ''}" onchange="actualizarCampoProyecto(${selectedProjectIndex}, 'besMW', this.value)" oninput="marcarEdicionPendiente()">
+                    </div>
+                    <div class="detail-field">
+                        <label>BESS MWh</label>
+                        <input type="number" step="0.01" inputmode="decimal" value="${proyecto.besMWh ?? ''}" onchange="actualizarCampoProyecto(${selectedProjectIndex}, 'besMWh', this.value)" oninput="marcarEdicionPendiente()">
+                    </div>
+                    <div class="detail-field">
+                        <label>PEO</label>
+                        <input type="number" step="0.000001" inputmode="decimal" value="${proyecto.peo ?? ''}" onchange="actualizarCampoProyecto(${selectedProjectIndex}, 'peo', this.value)" oninput="marcarEdicionPendiente()">
+                    </div>
+                    <div class="detail-field">
+                        <label>Duración BESS estimada</label>
+                        <input type="text" value="${duracion !== null ? duracion.toFixed(2) + ' horas' : 'Completa BESS MW y BESS MWh'}" readonly>
+                    </div>
+                </div>
+                <div class="detail-notes">Los cambios se guardan automáticamente en este navegador. Usa “Restablecer plantilla” para volver a los datos base precargados del CSV.</div>
+            `;
+        }
+
+        function seleccionarProyecto(index) {
+            selectedProjectIndex = index;
+            renderProjectSelector();
+            renderProjectDetail();
+        }
+
+        function actualizarBusquedaProyecto(value) {
+            projectSearchQuery = String(value || '');
+            renderProjectSelector();
+            renderProjectDetail();
+        }
+
+        function limpiarBusquedaProyecto() {
+            projectSearchQuery = '';
+            const input = document.getElementById('project-search');
+            if (input) input.value = '';
+            renderProjectSelector();
+            renderProjectDetail();
         }
 
         function marcarEdicionPendiente() {
@@ -1002,6 +1372,8 @@
             }
             guardarTodoEnStorage('Cambio guardado automáticamente.');
             actualizarResumen();
+            renderProjectSelector();
+            renderProjectDetail();
         }
 
         function guardarCapturaManual() {
@@ -1011,6 +1383,10 @@
         function restablecerPlantilla() {
             proyectos = obtenerPlantillaInicial();
             ofertas = [];
+            selectedProjectIndex = 0;
+            projectSearchQuery = '';
+            const searchInput = document.getElementById('project-search');
+            if (searchInput) searchInput.value = '';
             renderTablaCaptura();
             actualizarUI();
             guardarTodoEnStorage('Plantilla restablecida.');
@@ -1026,6 +1402,7 @@
                 peo: null
             }));
             ofertas = [];
+            selectedProjectIndex = 0;
             renderTablaCaptura();
             actualizarUI();
             guardarTodoEnStorage('Valores numéricos limpiados.');
@@ -1125,6 +1502,10 @@
             if (importados.length > 0) {
                 proyectos = importados;
                 ofertas = [];
+                selectedProjectIndex = 0;
+                projectSearchQuery = '';
+                const searchInput = document.getElementById('project-search');
+                if (searchInput) searchInput.value = '';
                 renderTablaCaptura();
                 actualizarUI();
                 guardarTodoEnStorage(`CSV importado: ${importados.length} proyectos cargados.`);
@@ -1899,16 +2280,5 @@
         // Inicializar
         inicializarApp();
     </script>
-
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('./sw.js').catch(function(err){
-      console.log('SW registration failed:', err);
-    });
-  });
-}
-</script>
-
 </body>
 </html>
