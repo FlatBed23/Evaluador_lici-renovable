@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Evaluador Licitación Renovable EDES-LP-GR-01-2025 · v5</title>
+    <title>Evaluador Licitación Renovable EDES-LP-GR-01-2025 · v7</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -455,8 +455,9 @@
 
         .capture-layout {
             display: grid;
-            grid-template-columns: 1fr;
+            grid-template-columns: minmax(300px, 380px) minmax(0, 1fr);
             gap: 24px;
+            align-items: start;
         }
 
         .table-toolbar {
@@ -692,6 +693,159 @@
         }
 
 
+        .app-header {
+            border-left: none;
+            padding: 22px 24px;
+        }
+
+        .brand-wrap {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: nowrap;
+        }
+
+        .brand-logo-full {
+            height: 56px;
+            width: auto;
+            object-fit: contain;
+            flex: 0 0 auto;
+        }
+
+        .brand-copy {
+            min-width: 0;
+        }
+
+        .brand-copy h1 {
+            margin-bottom: 6px;
+        }
+
+        .project-detail-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 4px;
+        }
+
+        .project-detail-actions .btn {
+            flex: 1 1 180px;
+        }
+
+        .pending-pill {
+            display: none;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #92400e;
+            background: #fef3c7;
+            border: 1px solid #fcd34d;
+            border-radius: 999px;
+            padding: 7px 10px;
+        }
+
+        .pending-pill.show {
+            display: inline-flex;
+        }
+
+        .mobile-results-list,
+        .mobile-merito-list {
+            display: none;
+        }
+
+        .mobile-result-card,
+        .mobile-merito-card {
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            background: white;
+            padding: 14px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            display: grid;
+            gap: 10px;
+        }
+
+        .mobile-result-card.ege-highlight,
+        .mobile-merito-card.ege-highlight {
+            border-left: 4px solid var(--primary);
+            background: #f8fcf9;
+        }
+
+        .mobile-card-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .mobile-card-title {
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1.25;
+            font-size: 15px;
+        }
+
+        .mobile-card-subtitle {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 3px;
+        }
+
+        .metric-grid-mobile {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .metric-box-mobile {
+            background: var(--bg);
+            border-radius: 10px;
+            padding: 10px 11px;
+        }
+
+        .metric-label-mobile {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            font-weight: 700;
+        }
+
+        .metric-value-mobile {
+            font-size: 14px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1.2;
+            word-break: break-word;
+        }
+
+        .chart-stack {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 32px;
+        }
+
+        .chart-card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px;
+        }
+
+        .chart-card h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 14px;
+            color: var(--text);
+        }
+
+        .chart-export-row {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+
         @media (max-width: 1200px) {
             .capture-layout {
                 grid-template-columns: 1fr;
@@ -703,6 +857,10 @@
 
             .detail-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .brand-logo-full {
+                height: 50px;
             }
 
             .grid-2 {
@@ -728,18 +886,32 @@
 
         @media (max-width: 768px) {
             body {
-                padding: 10px;
+                padding: 8px;
             }
 
             header,
             .card {
-                padding: 16px;
+                padding: 14px;
                 border-radius: 12px;
             }
 
+            .app-header {
+                padding: 14px;
+            }
+
+            .brand-wrap {
+                align-items: flex-start;
+                gap: 10px;
+                flex-direction: column;
+            }
+
+            .brand-logo-full {
+                height: 36px;
+            }
+
             h1 {
-                font-size: 22px;
-                line-height: 1.15;
+                font-size: 21px;
+                line-height: 1.12;
             }
 
             .section-subtitle,
@@ -797,6 +969,11 @@
                 flex: 1 1 100%;
             }
 
+            .capture-layout {
+                grid-template-columns: 1fr;
+                gap: 14px;
+            }
+
             .project-selector-panel,
             .project-detail-panel {
                 padding: 12px;
@@ -804,7 +981,7 @@
             }
 
             .project-selector-list {
-                max-height: 240px;
+                max-height: 230px;
             }
 
             .project-selector-item {
@@ -839,9 +1016,14 @@
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>📊 Evaluador de Licitación Renovable</h1>
-            <p class="subtitle">EDES-LP-GR-01-2025 | Sistema de Evaluación de Ofertas Económicas</p>
+        <header class="app-header">
+            <div class="brand-wrap">
+                <img src="logo_egehaina.png" alt="EGE Haina Energía Sostenible" class="brand-logo-full" onerror="this.style.display='none'">
+                <div class="brand-copy">
+                    <h1>📊 Evaluador de Licitación Renovable</h1>
+                    <p class="subtitle">EDES-LP-GR-01-2025 | Sistema de Evaluación de Ofertas Económicas</p>
+                </div>
+            </div>
         </header>
 
         <noscript><div class="alert alert-warning">⚠️ Este archivo requiere JavaScript para mostrar la plantilla, capturar datos y calcular resultados.</div></noscript>
@@ -979,6 +1161,7 @@
                 </div>
                 
                 <div id="results-container" style="display: none;">
+                    <div id="results-mobile-list" class="mobile-results-list"></div>
                     <div class="scroll-container">
                         <table id="results-table">
                             <thead>
@@ -1003,6 +1186,7 @@
 
             <div id="tab-merito" class="tab-content">
                 <h2 class="card-title">Orden de Mérito (por PCE)</h2>
+                <div id="merito-mobile-list" class="mobile-merito-list" style="margin-bottom:16px;"></div>
                 <div id="merito-container" class="scroll-container">
                     <table>
                         <thead>
@@ -1026,26 +1210,32 @@
 
             <div id="tab-graficos" class="tab-content">
                 <h2 class="card-title">Visualización de Resultados</h2>
-                
-                <!-- Botón Exportar PDF -->
-                <div style="margin-bottom: 20px;">
+                <div class="chart-export-row">
                     <button class="btn btn-primary" onclick="exportarPDF()">📄 Exportar Reporte a PDF</button>
                 </div>
-                
-                <div>
-                    <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 15px; color: var(--text);">Curva de Oferta (PCE vs Capacidad Acumulada)</h3>
-                    <div class="chart-container" style="height: 500px;">
-                        <canvas id="meritChart"></canvas>
+                <div class="chart-stack">
+                    <div class="chart-card">
+                        <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+                            <img src="iso_egehaina.png" alt="Isotipo EGE Haina" style="height:26px; width:auto;" onerror="this.style.display='none'">
+                            <h3 style="margin-bottom:0;">Curva de Oferta (PCE vs Capacidad Acumulada)</h3>
+                        </div>
+                        <div class="chart-container" style="height: 500px;">
+                            <canvas id="meritChart"></canvas>
+                        </div>
                     </div>
-                </div>
-                
-                <div style="margin-top: 40px;">
-                    <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 15px; color: var(--text);">Asignación por Proyecto (Waterfall)</h3>
-                    <div class="chart-container" style="height: 500px;">
-                        <canvas id="waterfallChart"></canvas>
+                    <div class="chart-card">
+                        <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+                            <img src="iso_egehaina.png" alt="Isotipo EGE Haina" style="height:26px; width:auto;" onerror="this.style.display='none'">
+                            <h3 style="margin-bottom:0;">Asignación por Proyecto (Waterfall)</h3>
+                        </div>
+                        <div class="chart-container" style="height: 500px;">
+                            <canvas id="waterfallChart"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
         </div>
     </div>
 
@@ -1059,10 +1249,12 @@
         let waterfallChart = null;
         let selectedProjectIndex = 0;
         let projectSearchQuery = '';
+        let hasUnsavedChanges = false;
+        let savedProjectsSnapshot = '[]';
 
         const STORAGE_KEYS = {
-            proyectos: 'evaluador_renovable_proyectos_v5',
-            parametros: 'evaluador_renovable_parametros_v5'
+            proyectos: 'evaluador_renovable_proyectos_v6',
+            parametros: 'evaluador_renovable_parametros_v6'
         };
 
         // Constantes
@@ -1403,7 +1595,10 @@
         function guardarTodoEnStorage(mensaje = 'Datos guardados localmente.') {
             guardarParametrosEnStorage();
             guardarProyectosEnStorage();
+            savedProjectsSnapshot = JSON.stringify(proyectos);
+            hasUnsavedChanges = false;
             estadoGuardado(mensaje);
+            renderProjectDetail();
         }
 
         function cargarDesdeStorage() {
@@ -1451,6 +1646,8 @@
             }
 
             selectedProjectIndex = 0;
+            savedProjectsSnapshot = JSON.stringify(proyectos);
+            hasUnsavedChanges = false;
             renderTablaCaptura();
             actualizarResumen();
             estadoGuardado(cargados ? 'Datos restaurados desde este navegador.' : 'Datos base precargados.');
@@ -1508,6 +1705,70 @@
                     </button>
                 `;
             }).join('');
+
+            if (mobileList) {
+                mobileList.innerHTML = ofertas.map((o, idx) => {
+                    const estadoBadge = {
+                        'adjudicado': '<span class="badge badge-success">Adjudicado</span>',
+                        'parcial': '<span class="badge badge-warning">Parcial</span>',
+                        'rechazado': '<span class="badge badge-danger">Rechazado</span>',
+                        'pendiente': '<span class="badge">Pendiente</span>'
+                    };
+                    const techBadge = o.tecnologia === 'solar'
+                        ? '<span class="badge badge-solar">☀️ Solar</span>'
+                        : '<span class="badge badge-eolica">💨 Eólica</span>';
+                    const isEGEHaina = o.participante.includes('EGE Haina');
+                    return `
+                        <div class="mobile-result-card ${isEGEHaina ? 'ege-highlight' : ''}">
+                            <div class="mobile-card-head">
+                                <div>
+                                    <div class="mobile-card-title">${idx + 1}. ${o.participante}</div>
+                                    <div class="mobile-card-subtitle">${o.desarrollador}</div>
+                                </div>
+                                ${estadoBadge[o.estado]}
+                            </div>
+                            <div class="selector-tags">${techBadge}${isEGEHaina ? '<span class="badge badge-success">EGE Haina</span>' : ''}</div>
+                            <div class="metric-grid-mobile">
+                                <div class="metric-box-mobile"><div class="metric-label-mobile">PEO</div><div class="metric-value-mobile">${o.peo.toFixed(6)}</div></div>
+                                <div class="metric-box-mobile"><div class="metric-label-mobile">PCE</div><div class="metric-value-mobile">${o.pce.toFixed(6)}</div></div>
+                                <div class="metric-box-mobile"><div class="metric-label-mobile">Cap. ofertada</div><div class="metric-value-mobile">${o.capacidad.toFixed(2)} MW</div></div>
+                                <div class="metric-box-mobile"><div class="metric-label-mobile">Cap. asignada</div><div class="metric-value-mobile">${o.capacidadAsignada.toFixed(2)} MW</div></div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+
+        function getSavedProjectAt(index) {
+            try {
+                const parsed = JSON.parse(savedProjectsSnapshot || '[]');
+                if (!Array.isArray(parsed)) return null;
+                return parsed[index] || null;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function revertirFichaActual() {
+            const saved = getSavedProjectAt(selectedProjectIndex);
+            if (!saved || !proyectos[selectedProjectIndex]) return;
+            proyectos[selectedProjectIndex] = {
+                ...proyectos[selectedProjectIndex],
+                semifinalista: !!saved.semifinalista,
+                tecnologia: String(saved.tecnologia || 'solar').toLowerCase(),
+                mwn: normalizarNumero(saved.mwn),
+                capacidadMin: normalizarNumero(saved.capacidadMin),
+                besMW: normalizarNumero(saved.besMW),
+                besMWh: normalizarNumero(saved.besMWh),
+                peo: normalizarNumero(saved.peo)
+            };
+            hasUnsavedChanges = false;
+            renderProjectSelector();
+            renderProjectDetail();
+            actualizarResumen();
+            estadoGuardado('Cambios de la ficha descartados.');
         }
 
         function renderProjectDetail() {
@@ -1575,7 +1836,12 @@
                         <input type="text" value="${duracion !== null ? duracion.toFixed(2) + ' horas' : 'Completa BESS MW y BESS MWh'}" readonly>
                     </div>
                 </div>
-                <div class="detail-notes">Los cambios se guardan automáticamente en este navegador. Usa “Restablecer plantilla” para volver a los datos base precargados del CSV.</div>
+                <div class="detail-notes">Edita la ficha y usa “Guardar ficha” cuando quieras confirmar los cambios en este navegador. “Descartar ficha” revierte la ficha seleccionada al último guardado.</div>
+                <div class="project-detail-actions">
+                    <div class="pending-pill ${hasUnsavedChanges ? 'show' : ''}">● Cambios pendientes</div>
+                    <button class="btn btn-secondary" type="button" onclick="revertirFichaActual()">↺ Descartar ficha</button>
+                    <button class="btn btn-primary" type="button" onclick="guardarCapturaManual()">💾 Guardar ficha</button>
+                </div>
             `;
         }
 
@@ -1600,7 +1866,9 @@
         }
 
         function marcarEdicionPendiente() {
-            estadoGuardado('Hay cambios sin guardar explícitamente. Se conservarán automáticamente.');
+            hasUnsavedChanges = true;
+            estadoGuardado('Hay cambios pendientes en la ficha seleccionada.');
+            renderProjectDetail();
         }
 
         function actualizarCampoProyecto(index, campo, valor) {
@@ -1612,14 +1880,17 @@
             } else {
                 proyectos[index][campo] = normalizarNumero(valor);
             }
-            guardarTodoEnStorage('Cambio guardado automáticamente.');
+            hasUnsavedChanges = true;
             actualizarResumen();
             renderProjectSelector();
             renderProjectDetail();
+            estadoGuardado('Hay cambios pendientes en la ficha seleccionada.');
         }
 
         function guardarCapturaManual() {
             guardarTodoEnStorage('Datos guardados manualmente.');
+            renderProjectSelector();
+            actualizarResumen();
         }
 
         function restablecerPlantilla() {
@@ -1962,10 +2233,12 @@
             const tbody = document.getElementById('results-body');
             const emptyState = document.getElementById('empty-state');
             const resultsContainer = document.getElementById('results-container');
+            const mobileList = document.getElementById('results-mobile-list');
 
             if (ofertas.length === 0) {
                 emptyState.style.display = 'block';
                 resultsContainer.style.display = 'none';
+                if (mobileList) mobileList.innerHTML = '';
                 return;
             }
 
@@ -2007,6 +2280,7 @@
 
         function actualizarTablaMerito() {
             const tbody = document.getElementById('merito-body');
+            const mobileList = document.getElementById('merito-mobile-list');
             const ordenMerito = [...ofertas].sort((a, b) => {
                 if (a.pce !== b.pce) return a.pce - b.pce;
                 if (a.capacidad !== b.capacidad) return b.capacidad - a.capacidad;
@@ -2055,6 +2329,51 @@
                     </tr>
                 `;
             }).join('');
+
+            if (mobileList) {
+                let capacidadAcumuladaMobile = 0;
+                mobileList.innerHTML = ordenMerito.map((o, idx) => {
+                    const estadoBadge = {
+                        'adjudicado': '<span class="badge badge-success">Adjudicado</span>',
+                        'parcial': '<span class="badge badge-warning">Parcial</span>',
+                        'rechazado': '<span class="badge badge-danger">Rechazado</span>',
+                        'pendiente': '<span class="badge">Pendiente</span>'
+                    };
+                    const techBadge = o.tecnologia === 'solar'
+                        ? '<span class="badge badge-solar">☀️ Solar</span>'
+                        : '<span class="badge badge-eolica">💨 Eólica</span>';
+                    const capAcumuladaAntes = capacidadAcumuladaMobile;
+                    if (o.estado === 'adjudicado' || o.estado === 'parcial') {
+                        capacidadAcumuladaMobile += o.capacidadAsignada;
+                    }
+                    const capDisponible = (o.cmaxef || 0) - capAcumuladaAntes;
+                    const isEGEHaina = o.participante.includes('EGE Haina');
+                    return `
+                        <div class="mobile-merito-card ${isEGEHaina ? 'ege-highlight' : ''}">
+                            <div class="mobile-card-head">
+                                <div>
+                                    <div class="mobile-card-title">${idx + 1}° ${o.participante}</div>
+                                    <div class="mobile-card-subtitle">${o.desarrollador}</div>
+                                </div>
+                                ${estadoBadge[o.estado]}
+                            </div>
+                            <div class="selector-tags">${techBadge}${isEGEHaina ? '<span class="badge badge-success">EGE Haina</span>' : ''}</div>
+                            <div class="metric-grid-mobile">
+                                <div class="metric-box-mobile"><div class="metric-label-mobile">PCE</div><div class="metric-value-mobile">${o.pce.toFixed(6)}</div></div>
+                                <div class="metric-box-mobile"><div class="metric-label-mobile">CMAXef</div><div class="metric-value-mobile">${(o.cmaxef || 0).toFixed(2)}</div></div>
+                                <div class="metric-box-mobile"><div class="metric-label-mobile">Cap. ofertada</div><div class="metric-value-mobile">${o.capacidad.toFixed(2)} MW</div></div>
+                                <div class="metric-box-mobile"><div class="metric-label-mobile">Cap. acumulada</div><div class="metric-value-mobile">${capAcumuladaAntes.toFixed(2)} MW</div></div>
+                                <div class="metric-box-mobile"><div class="metric-label-mobile">Cap. disponible</div><div class="metric-value-mobile">${capDisponible.toFixed(2)} MW</div></div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+
+        function esPantallaMovil() {
+            return window.innerWidth <= 768;
         }
 
         function actualizarGraficos() {
@@ -2073,6 +2392,7 @@
                 return 0;
             });
 
+            const modoMovil = esPantallaMovil();
             let capacidadAcumulada = 0;
             const dataPoints = [];
             const annotations = {};
@@ -2087,23 +2407,24 @@
                     const isEGEHaina = o.participante.includes('EGE Haina');
                     const midPoint = capacidadAcumulada + (o.capacidadAsignada / 2);
                     
-                    // Crear anotación para el nombre del proyecto
-                    annotations[`project${idx}`] = {
-                        type: 'label',
-                        xValue: midPoint,
-                        yValue: o.pce,
-                        backgroundColor: isEGEHaina ? 'rgba(26, 77, 46, 0.9)' : 'rgba(0, 0, 0, 0.7)',
-                        content: o.participante.length > 25 ? o.participante.substring(0, 22) + '...' : o.participante,
-                        color: 'white',
-                        font: {
-                            size: 10,
-                            weight: 'bold'
-                        },
-                        padding: 4,
-                        borderRadius: 4,
-                        position: 'center',
-                        yAdjust: -15
-                    };
+                    if (!modoMovil) {
+                        annotations[`project${idx}`] = {
+                            type: 'label',
+                            xValue: midPoint,
+                            yValue: o.pce,
+                            backgroundColor: isEGEHaina ? 'rgba(26, 77, 46, 0.9)' : 'rgba(0, 0, 0, 0.7)',
+                            content: o.participante.length > 25 ? o.participante.substring(0, 22) + '...' : o.participante,
+                            color: 'white',
+                            font: {
+                                size: 10,
+                                weight: 'bold'
+                            },
+                            padding: 4,
+                            borderRadius: 4,
+                            position: 'center',
+                            yAdjust: -15
+                        };
+                    }
                     
                     capacidadAcumulada += o.capacidadAsignada;
                     dataPoints.push({
@@ -2143,7 +2464,7 @@
                                 text: 'Capacidad Acumulada (MW)',
                                 font: {
                                     family: 'IBM Plex Sans',
-                                    size: 14,
+                                    size: esPantallaMovil() ? 11 : 14,
                                     weight: '600'
                                 }
                             },
@@ -2157,7 +2478,7 @@
                                 text: 'PCE (US$/kWh)',
                                 font: {
                                     family: 'IBM Plex Sans',
-                                    size: 14,
+                                    size: esPantallaMovil() ? 11 : 14,
                                     weight: '600'
                                 }
                             },
@@ -2300,7 +2621,7 @@
                             ticks: {
                                 autoSkip: false,
                                 font: {
-                                    size: 10
+                                    size: esPantallaMovil() ? 9 : 10
                                 }
                             }
                         }
