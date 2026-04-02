@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Evaluador Licitación Renovable EDES-LP-GR-01-2025</title>
+    <title>Evaluador Licitación Renovable EDES-LP-GR-01-2025 · v5</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -534,6 +534,164 @@
             color: var(--text-muted);
         }
         
+
+        .finder-bar {
+            display: flex;
+            gap: 12px;
+            align-items: end;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .project-selector-panel,
+        .project-detail-panel {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px;
+        }
+
+        .project-selector-panel {
+            min-width: 0;
+        }
+
+        .project-detail-panel {
+            min-width: 0;
+        }
+
+        .selector-meta {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .project-selector-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 520px;
+            overflow-y: auto;
+            padding-right: 2px;
+        }
+
+        .project-selector-item {
+            width: 100%;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: white;
+            padding: 12px 14px;
+            text-align: left;
+            cursor: pointer;
+            transition: 0.2s ease;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+        }
+
+        .project-selector-item:hover,
+        .project-selector-item.active {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(26, 77, 46, 0.08);
+            transform: translateY(-1px);
+        }
+
+        .project-selector-item.ege-highlight {
+            border-left: 4px solid var(--primary);
+        }
+
+        .selector-name {
+            font-weight: 700;
+            font-size: 14px;
+            line-height: 1.35;
+            margin-bottom: 3px;
+            color: var(--text);
+        }
+
+        .selector-subtitle {
+            color: var(--text-muted);
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+        .selector-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .empty-search-state,
+        .project-detail-empty {
+            border: 1px dashed var(--border);
+            border-radius: 12px;
+            padding: 18px;
+            color: var(--text-muted);
+            background: white;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .project-detail {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .project-detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            flex-wrap: wrap;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .project-detail-title {
+            font-size: 20px;
+            font-weight: 700;
+            line-height: 1.2;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .project-detail-subtitle {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .detail-field {
+            min-width: 0;
+        }
+
+        .detail-field label {
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+
+        .detail-field input,
+        .detail-field select {
+            width: 100%;
+            min-width: 0;
+            font-size: 14px;
+            padding: 12px 14px;
+        }
+
+        .detail-notes {
+            font-size: 13px;
+            color: var(--text-muted);
+            background: white;
+            border: 1px dashed var(--border);
+            border-radius: 10px;
+            padding: 12px 14px;
+        }
+
+
         @media (max-width: 1200px) {
             .capture-layout {
                 grid-template-columns: 1fr;
@@ -570,16 +728,36 @@
 
         @media (max-width: 768px) {
             body {
-                padding: 12px;
+                padding: 10px;
             }
 
             header,
             .card {
-                padding: 20px;
+                padding: 16px;
+                border-radius: 12px;
+            }
+
+            h1 {
+                font-size: 22px;
+                line-height: 1.15;
+            }
+
+            .section-subtitle,
+            .status-text {
+                font-size: 12px;
             }
 
             .summary {
                 grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .summary-card {
+                padding: 16px;
+            }
+
+            .summary-value {
+                font-size: 22px;
             }
 
             .tabs {
@@ -589,12 +767,72 @@
 
             .tab {
                 white-space: nowrap;
-                padding: 12px 18px;
+                padding: 10px 14px;
+                font-size: 13px;
             }
 
             .csv-actions,
-            .params-grid {
+            .params-grid,
+            .detail-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .finder-bar {
+                gap: 10px;
+            }
+
+            .finder-bar .btn {
+                width: 100%;
+            }
+
+            .table-toolbar {
+                align-items: stretch;
+            }
+
+            .sticky-actions {
+                width: 100%;
+            }
+
+            .sticky-actions .btn {
+                flex: 1 1 100%;
+            }
+
+            .project-selector-panel,
+            .project-detail-panel {
+                padding: 12px;
+                border-radius: 12px;
+            }
+
+            .project-selector-list {
+                max-height: 240px;
+            }
+
+            .project-selector-item {
+                padding: 11px 12px;
+            }
+
+            .selector-name {
+                font-size: 13px;
+            }
+
+            .selector-subtitle {
+                font-size: 11px;
+                margin-bottom: 8px;
+            }
+
+            .badge {
+                font-size: 10px;
+                padding: 4px 8px;
+                line-height: 1.2;
+            }
+
+            .project-detail-title {
+                font-size: 18px;
+            }
+
+            .detail-field input,
+            .detail-field select {
+                font-size: 16px;
             }
         }
     </style>
@@ -823,8 +1061,8 @@
         let projectSearchQuery = '';
 
         const STORAGE_KEYS = {
-            proyectos: 'evaluador_renovable_proyectos_v3',
-            parametros: 'evaluador_renovable_parametros_v3'
+            proyectos: 'evaluador_renovable_proyectos_v5',
+            parametros: 'evaluador_renovable_parametros_v5'
         };
 
         // Constantes
@@ -1113,17 +1351,21 @@
 ];
 
         function crearProyectoDesdePlantilla(base, index) {
+            const semifinalistaValor = typeof base.semifinalista === 'boolean'
+                ? base.semifinalista
+                : String(base.semifinalista || '').trim().toLowerCase() === 'si';
+
             return {
                 id: index + 1,
                 nombre: base.nombre,
                 desarrollador: base.desarrollador,
-                semifinalista: String(base.semifinalista).toLowerCase() === 'si',
+                semifinalista: semifinalistaValor,
                 tecnologia: String(base.tecnologia || 'solar').toLowerCase(),
-                mwn: null,
-                capacidadMin: null,
-                besMW: null,
-                besMWh: null,
-                peo: null
+                mwn: normalizarNumero(base.mwn),
+                capacidadMin: normalizarNumero(base.capacidadMin),
+                besMW: normalizarNumero(base.besMW),
+                besMWh: normalizarNumero(base.besMWh),
+                peo: normalizarNumero(base.peo)
             };
         }
 
