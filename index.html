@@ -558,6 +558,7 @@
 
         .project-detail-panel {
             min-width: 0;
+            width: 100%;
         }
 
         .selector-meta {
@@ -1012,6 +1013,54 @@
                 font-size: 16px;
             }
         }
+
+        @media (min-width: 901px) {
+            .capture-layout {
+                grid-template-columns: minmax(320px, 360px) minmax(0, 1fr);
+                gap: 28px;
+            }
+
+            .project-detail-panel {
+                min-height: 540px;
+            }
+
+            .project-detail {
+                min-height: 100%;
+            }
+
+            .finder-bar .form-group {
+                max-width: 420px;
+            }
+
+            .mobile-results-list,
+            .mobile-merito-list {
+                display: none !important;
+            }
+
+            #results-container .scroll-container,
+            #merito-container {
+                display: block !important;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .mobile-results-list,
+            .mobile-merito-list {
+                display: grid !important;
+                gap: 12px;
+                margin-bottom: 14px;
+            }
+
+            #results-container .scroll-container,
+            #merito-container {
+                display: none !important;
+            }
+
+            .chart-container {
+                height: 320px !important;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -1253,8 +1302,8 @@
         let savedProjectsSnapshot = '[]';
 
         const STORAGE_KEYS = {
-            proyectos: 'evaluador_renovable_proyectos_v6',
-            parametros: 'evaluador_renovable_parametros_v6'
+            proyectos: 'evaluador_renovable_proyectos_v9',
+            parametros: 'evaluador_renovable_parametros_v9'
         };
 
         // Constantes
@@ -1694,7 +1743,7 @@
                 const egeClass = proyecto.desarrollador === 'EGE Haina' ? 'ege-highlight' : '';
                 const datosCompletos = [proyecto.mwn, proyecto.capacidadMin, proyecto.besMW, proyecto.besMWh, proyecto.peo].every(v => v !== null && v !== undefined && v !== '');
                 return `
-                    <button type="button" class="project-selector-item ${activeClass} ${egeClass}" onclick="seleccionarProyecto(${index})">
+                    <button type="button" class="project-selector-item ${activeClass} ${egeClass}" data-project-index="${index}">
                         <div class="selector-name">${proyecto.nombre}</div>
                         <div class="selector-subtitle">${proyecto.desarrollador}</div>
                         <div class="selector-tags">
@@ -1706,38 +1755,14 @@
                 `;
             }).join('');
 
-            if (mobileList) {
-                mobileList.innerHTML = ofertas.map((o, idx) => {
-                    const estadoBadge = {
-                        'adjudicado': '<span class="badge badge-success">Adjudicado</span>',
-                        'parcial': '<span class="badge badge-warning">Parcial</span>',
-                        'rechazado': '<span class="badge badge-danger">Rechazado</span>',
-                        'pendiente': '<span class="badge">Pendiente</span>'
-                    };
-                    const techBadge = o.tecnologia === 'solar'
-                        ? '<span class="badge badge-solar">☀️ Solar</span>'
-                        : '<span class="badge badge-eolica">💨 Eólica</span>';
-                    const isEGEHaina = o.participante.includes('EGE Haina');
-                    return `
-                        <div class="mobile-result-card ${isEGEHaina ? 'ege-highlight' : ''}">
-                            <div class="mobile-card-head">
-                                <div>
-                                    <div class="mobile-card-title">${idx + 1}. ${o.participante}</div>
-                                    <div class="mobile-card-subtitle">${o.desarrollador}</div>
-                                </div>
-                                ${estadoBadge[o.estado]}
-                            </div>
-                            <div class="selector-tags">${techBadge}${isEGEHaina ? '<span class="badge badge-success">EGE Haina</span>' : ''}</div>
-                            <div class="metric-grid-mobile">
-                                <div class="metric-box-mobile"><div class="metric-label-mobile">PEO</div><div class="metric-value-mobile">${o.peo.toFixed(6)}</div></div>
-                                <div class="metric-box-mobile"><div class="metric-label-mobile">PCE</div><div class="metric-value-mobile">${o.pce.toFixed(6)}</div></div>
-                                <div class="metric-box-mobile"><div class="metric-label-mobile">Cap. ofertada</div><div class="metric-value-mobile">${o.capacidad.toFixed(2)} MW</div></div>
-                                <div class="metric-box-mobile"><div class="metric-label-mobile">Cap. asignada</div><div class="metric-value-mobile">${o.capacidadAsignada.toFixed(2)} MW</div></div>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-            }
+            container.querySelectorAll('.project-selector-item').forEach((button) => {
+                button.addEventListener('click', function() {
+                    const index = Number(this.dataset.projectIndex);
+                    if (!Number.isNaN(index)) {
+                        seleccionarProyecto(index);
+                    }
+                });
+            });
         }
 
 
@@ -1890,7 +1915,7 @@
             hasUnsavedChanges = true;
             actualizarResumen();
             renderProjectSelector();
-            renderProjectDetail();
+            actualizarIndicadoresFichaPendiente();
             estadoGuardado('Hay cambios pendientes en la ficha seleccionada.');
         }
 
@@ -2283,6 +2308,39 @@
                     </tr>
                 `;
             }).join('');
+
+            if (mobileList) {
+                mobileList.innerHTML = ofertas.map((o, idx) => {
+                    const estadoBadge = {
+                        'adjudicado': '<span class="badge badge-success">Adjudicado</span>',
+                        'parcial': '<span class="badge badge-warning">Parcial</span>',
+                        'rechazado': '<span class="badge badge-danger">Rechazado</span>',
+                        'pendiente': '<span class="badge">Pendiente</span>'
+                    };
+                    const techBadge = o.tecnologia === 'solar'
+                        ? '<span class="badge badge-solar">☀️ Solar</span>'
+                        : '<span class="badge badge-eolica">💨 Eólica</span>';
+                    const isEGEHaina = o.participante.includes('EGE Haina');
+                    return `
+                        <div class="mobile-result-card ${isEGEHaina ? 'ege-highlight' : ''}">
+                            <div class="mobile-card-head">
+                                <div>
+                                    <div class="mobile-card-title">${idx + 1}. ${o.participante}</div>
+                                    <div class="mobile-card-subtitle">${o.desarrollador}</div>
+                                </div>
+                                ${estadoBadge[o.estado]}
+                            </div>
+                            <div class="selector-tags">${techBadge}${isEGEHaina ? '<span class="badge badge-success">EGE Haina</span>' : ''}</div>
+                            <div class="metric-grid-mobile">
+                                <div class="metric-box-mobile"><div class="metric-label-mobile">PEO</div><div class="metric-value-mobile">${o.peo.toFixed(6)}</div></div>
+                                <div class="metric-box-mobile"><div class="metric-label-mobile">PCE</div><div class="metric-value-mobile">${o.pce.toFixed(6)}</div></div>
+                                <div class="metric-box-mobile"><div class="metric-label-mobile">Cap. ofertada</div><div class="metric-value-mobile">${o.capacidad.toFixed(2)} MW</div></div>
+                                <div class="metric-box-mobile"><div class="metric-label-mobile">Cap. asignada</div><div class="metric-value-mobile">${o.capacidadAsignada.toFixed(2)} MW</div></div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
         }
 
         function actualizarTablaMerito() {
