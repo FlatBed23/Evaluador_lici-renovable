@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Evaluador Licitación Renovable EDES-LP-GR-01-2025 · v8</title>
+    <title>Evaluador Licitación Renovable EDES-LP-GR-01-2025 · v11</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -18,9 +18,9 @@
         }
         
         :root {
-            --primary: #1a4d2e;
-            --primary-light: #2d6a3e;
-            --secondary: #ff6b35;
+            --primary: rgb(30, 70, 50);
+            --primary-light: rgb(26, 60, 43);
+            --secondary: rgb(0, 89, 120);
             --success: #2d6a3e;
             --warning: #f59e0b;
             --danger: #dc2626;
@@ -146,14 +146,20 @@
         }
         
         .btn-primary {
-            background: var(--primary);
+            background: var(--secondary);
             color: white;
         }
         
         .btn-primary:hover {
-            background: var(--primary-light);
+            background: rgb(26, 60, 43);
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(26, 77, 46, 0.3);
+            box-shadow: 0 4px 12px rgba(30, 70, 50, 0.28);
+        }
+
+        .btn-primary:active {
+            background: rgb(23, 53, 38);
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(23, 53, 38, 0.24);
         }
         
         .btn-secondary {
@@ -162,9 +168,15 @@
         }
         
         .btn-secondary:hover {
-            background: #ff8556;
+            background: rgb(0, 70, 95);
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 89, 120, 0.28);
+        }
+
+        .btn-secondary:active {
+            background: rgb(0, 55, 75);
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(0, 55, 75, 0.24);
         }
         
         .btn-danger {
@@ -442,8 +454,13 @@
         }
         
         .file-input-label:hover {
-            background: var(--primary-light);
+            background: rgb(0, 70, 95);
             transform: translateY(-1px);
+        }
+
+        .file-input-label:active {
+            background: rgb(0, 55, 75);
+            transform: translateY(0);
         }
         
         .csv-actions {
@@ -1073,8 +1090,8 @@
         }
 
         .title-with-iso .title-iso {
-            width: 18px;
-            height: 18px;
+            width: 24px;
+            height: 24px;
             object-fit: contain;
             flex: 0 0 auto;
         }
@@ -1085,8 +1102,8 @@
         }
 
         .brand-copy h1.title-with-iso .title-iso {
-            width: 20px;
-            height: 20px;
+            width: 30px;
+            height: 30px;
         }
 
         @media (min-width: 992px) {
@@ -2065,17 +2082,14 @@
         function limpiarCapturaNumerica() {
             proyectos = proyectos.map((p) => ({
                 ...p,
-                mwn: null,
                 capacidadMin: null,
-                besMW: null,
-                besMWh: null,
                 peo: null
             }));
             ofertas = [];
-            selectedProjectIndex = 0;
+            selectedProjectIndex = Math.min(selectedProjectIndex, Math.max(proyectos.length - 1, 0));
             renderTablaCaptura();
             actualizarUI();
-            guardarTodoEnStorage('Valores numéricos limpiados.');
+            guardarTodoEnStorage('MW mínimo y PEO limpiados.');
         }
 
         function descargarCSV() {
@@ -3052,6 +3066,24 @@
                 }, 100);
             }
         }
+        function programarReajusteGraficos() {
+            clearTimeout(window.__chartsResizeTimer);
+            window.__chartsResizeTimer = setTimeout(() => {
+                if (meritChart) {
+                    meritChart.resize();
+                    meritChart.update('none');
+                }
+                if (waterfallChart) {
+                    waterfallChart.resize();
+                    waterfallChart.update('none');
+                }
+                const graficosActivo = document.getElementById('tab-graficos')?.classList.contains('active');
+                if (graficosActivo) {
+                    actualizarGraficos();
+                }
+            }, 220);
+        }
+
         function inicializarApp() {
             cargarDesdeStorage();
             actualizarUI();
@@ -3065,6 +3097,9 @@
                     }
                 });
             });
+
+            window.addEventListener('resize', programarReajusteGraficos);
+            window.addEventListener('orientationchange', programarReajusteGraficos);
         }
 
         // Inicializar
