@@ -1061,6 +1061,131 @@
             }
         }
 
+
+        .title-with-iso {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .title-with-iso::before {
+            display: none !important;
+        }
+
+        .title-with-iso .title-iso {
+            width: 18px;
+            height: 18px;
+            object-fit: contain;
+            flex: 0 0 auto;
+        }
+
+        .brand-copy h1.title-with-iso {
+            gap: 12px;
+            align-items: center;
+        }
+
+        .brand-copy h1.title-with-iso .title-iso {
+            width: 20px;
+            height: 20px;
+        }
+
+        @media (min-width: 992px) {
+            .container {
+                max-width: 1680px;
+            }
+
+            .card {
+                padding: 24px 28px;
+            }
+
+            .card > .capture-layout {
+                display: block;
+            }
+
+            .card > .capture-layout > div {
+                width: 100%;
+            }
+
+            .card > .capture-layout > div > .capture-layout {
+                display: grid;
+                grid-template-columns: minmax(320px, 360px) minmax(720px, 1fr);
+                gap: 28px;
+                align-items: start;
+            }
+
+            .project-selector-panel {
+                position: sticky;
+                top: 16px;
+            }
+
+            .project-selector-list {
+                max-height: 620px;
+            }
+
+            .project-detail-panel {
+                width: 100%;
+                max-width: none;
+                min-height: 620px;
+            }
+
+            .project-detail {
+                width: 100%;
+            }
+
+            .project-detail-header {
+                justify-content: space-between;
+                align-items: flex-start;
+                gap: 16px;
+            }
+
+            .project-detail-title {
+                font-size: 28px;
+            }
+
+            .project-detail-subtitle {
+                font-size: 14px;
+            }
+
+            .detail-grid {
+                grid-template-columns: repeat(2, minmax(220px, 1fr));
+                gap: 16px 18px;
+            }
+
+            .detail-field input,
+            .detail-field select {
+                min-height: 48px;
+            }
+
+            .project-detail-actions {
+                justify-content: flex-end;
+            }
+
+            .project-detail-actions .btn {
+                flex: 0 1 220px;
+            }
+
+            .finder-bar {
+                align-items: flex-end;
+            }
+
+            .finder-bar .form-group {
+                flex: 1 1 420px;
+                max-width: 520px !important;
+            }
+
+            .summary {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+            }
+
+            .chart-stack {
+                gap: 24px;
+            }
+
+            .chart-card {
+                padding: 18px 20px;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -1069,7 +1194,7 @@
             <div class="brand-wrap">
                 <img src="logo_egehaina.png" alt="EGE Haina Energía Sostenible" class="brand-logo-full" onerror="this.style.display='none'">
                 <div class="brand-copy">
-                    <h1>📊 Evaluador de Licitación Renovable</h1>
+                    <h1 class="title-with-iso"><img src="iso_egehaina.png" alt="EGE Haina" class="title-iso" onerror="this.style.display='none'"><span>Evaluador de Licitación Renovable</span></h1>
                     <p class="subtitle">EDES-LP-GR-01-2025 | Sistema de Evaluación de Ofertas Económicas</p>
                 </div>
             </div>
@@ -1079,7 +1204,7 @@
 
         <!-- Parámetros y Carga de Datos -->
         <div class="card">
-            <h2 class="card-title">⚙️ Configuración y Carga de Datos</h2>
+            <h2 class="card-title title-with-iso"><img src="iso_egehaina.png" alt="EGE Haina" class="title-iso" onerror="this.style.display='none'"><span>Configuración y Carga de Datos</span></h2>
             <p class="section-subtitle">La captura principal se hace directamente en esta página. El CSV queda disponible solo como apoyo para importar o exportar datos.</p>
 
             <div class="capture-layout">
@@ -2437,6 +2562,27 @@
         }
 
 
+
+        function abreviarNombreProyectoGrafico(nombre) {
+            const reemplazos = [
+                ['Parque Solar ', ''],
+                ['Parque Eólico ', ''],
+                ['Parque Fotovoltaico ', ''],
+                ['Planta Solar Fotovoltaica ', ''],
+                ['Eco Sur (Parque Solar ', 'Eco Sur '],
+                [')', '']
+            ];
+            let salida = nombre || '';
+            reemplazos.forEach(([from, to]) => {
+                salida = salida.replace(from, to);
+            });
+            salida = salida.replace(/\s+/g, ' ').trim();
+            if (salida.length > 18) {
+                salida = salida.substring(0, 16).trim() + '…';
+            }
+            return salida;
+        }
+
         function esPantallaMovil() {
             return window.innerWidth <= 768;
         }
@@ -2470,26 +2616,40 @@
                     });
                     
                     const isEGEHaina = o.participante.includes('EGE Haina');
-                    const midPoint = capacidadAcumulada + (o.capacidadAsignada / 2);
-                    
-                    if (!modoMovil) {
-                        annotations[`project${idx}`] = {
-                            type: 'label',
-                            xValue: midPoint,
-                            yValue: o.pce,
-                            backgroundColor: isEGEHaina ? 'rgba(26, 77, 46, 0.9)' : 'rgba(0, 0, 0, 0.7)',
-                            content: o.participante.length > 25 ? o.participante.substring(0, 22) + '...' : o.participante,
-                            color: 'white',
-                            font: {
-                                size: 10,
-                                weight: 'bold'
-                            },
-                            padding: 4,
-                            borderRadius: 4,
-                            position: 'center',
-                            yAdjust: -15
-                        };
-                    }
+                    const inicioEscalon = capacidadAcumulada;
+                    const longitudTramo = Math.max(o.capacidadAsignada || 0, 0);
+                    const desplazamientoInterno = Math.max(Math.min(longitudTramo * 0.28, modoMovil ? 18 : 24), modoMovil ? 8 : 10);
+                    const puntoEtiqueta = inicioEscalon + desplazamientoInterno;
+                    const nombreProyecto = abreviarNombreProyectoGrafico(o.participante);
+                    const yAdjustBase = modoMovil ? -10 : -12;
+                    const yAdjustAlterno = (idx % 2 === 0) ? yAdjustBase : yAdjustBase - (modoMovil ? 8 : 10);
+
+                    annotations[`project${idx}`] = {
+                        type: 'label',
+                        xValue: puntoEtiqueta,
+                        yValue: o.pce,
+                        backgroundColor: 'rgba(255, 255, 255, 0.84)',
+                        borderColor: isEGEHaina ? 'rgba(26, 77, 46, 0.95)' : 'rgba(55, 65, 81, 0.82)',
+                        borderWidth: 1,
+                        content: nombreProyecto,
+                        color: isEGEHaina ? '#1a4d2e' : '#374151',
+                        font: {
+                            size: modoMovil ? 8 : 10,
+                            weight: '700'
+                        },
+                        padding: {
+                            top: 2,
+                            right: 4,
+                            bottom: 2,
+                            left: 4
+                        },
+                        borderRadius: 4,
+                        position: 'center',
+                        textAlign: 'left',
+                        yAdjust: yAdjustAlterno,
+                        xAdjust: modoMovil ? 0 : 2,
+                        z: 10
+                    };
                     
                     capacidadAcumulada += o.capacidadAsignada;
                     dataPoints.push({
@@ -2538,6 +2698,8 @@
                             }
                         },
                         y: {
+                            suggestedMin: Math.max(0, cmaInf - 0.005),
+                            suggestedMax: cma + 0.004,
                             title: {
                                 display: true,
                                 text: 'PCE (US$/kWh)',
