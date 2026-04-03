@@ -146,7 +146,7 @@
         }
         
         .btn-primary {
-            background: var(--secondary);
+            background: var(--primary);
             color: white;
         }
         
@@ -354,6 +354,14 @@
             position: relative;
             height: 400px;
             margin-top: 20px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .chart-container canvas {
+            display: block;
+            width: 100% !important;
+            max-width: 100%;
         }
         
         .empty-state {
@@ -3069,19 +3077,42 @@
         function programarReajusteGraficos() {
             clearTimeout(window.__chartsResizeTimer);
             window.__chartsResizeTimer = setTimeout(() => {
+                const graficosActivo = document.getElementById('tab-graficos')?.classList.contains('active');
+                const meritCanvas = document.getElementById('meritChart');
+                const waterfallCanvas = document.getElementById('waterfallChart');
+
                 if (meritChart) {
-                    meritChart.resize();
-                    meritChart.update('none');
+                    meritChart.destroy();
+                    meritChart = null;
                 }
                 if (waterfallChart) {
-                    waterfallChart.resize();
-                    waterfallChart.update('none');
+                    waterfallChart.destroy();
+                    waterfallChart = null;
                 }
-                const graficosActivo = document.getElementById('tab-graficos')?.classList.contains('active');
-                if (graficosActivo) {
-                    actualizarGraficos();
+
+                if (meritCanvas) {
+                    meritCanvas.removeAttribute('width');
+                    meritCanvas.removeAttribute('height');
+                    meritCanvas.style.width = '100%';
+                    meritCanvas.style.height = '100%';
                 }
-            }, 220);
+                if (waterfallCanvas) {
+                    waterfallCanvas.removeAttribute('width');
+                    waterfallCanvas.removeAttribute('height');
+                    waterfallCanvas.style.width = '100%';
+                    waterfallCanvas.style.height = '100%';
+                }
+
+                const reconstruir = () => {
+                    if (graficosActivo) {
+                        actualizarGraficos();
+                    }
+                };
+
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(reconstruir);
+                });
+            }, 420);
         }
 
         function inicializarApp() {
@@ -3100,6 +3131,10 @@
 
             window.addEventListener('resize', programarReajusteGraficos);
             window.addEventListener('orientationchange', programarReajusteGraficos);
+            window.addEventListener('pageshow', programarReajusteGraficos);
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) programarReajusteGraficos();
+            });
         }
 
         // Inicializar
