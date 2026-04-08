@@ -3246,11 +3246,10 @@ async function exportarPDF() {
                 const blob = doc.output('blob');
                 const blobUrl = URL.createObjectURL(blob);
 
-                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-                    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
                 if (isIOS) {
-                    const opened = window.open(blobUrl, '_blank');
-                    if (!opened) {
+                    if (previewWindow && !previewWindow.closed) {
+                        previewWindow.location.href = blobUrl;
+                    } else {
                         const link = document.createElement('a');
                         link.href = blobUrl;
                         link.target = '_blank';
@@ -3271,6 +3270,9 @@ async function exportarPDF() {
                 setTimeout(() => URL.revokeObjectURL(blobUrl), 30000);
             } catch (error) {
                 console.error(error);
+                if (previewWindow && !previewWindow.closed) {
+                    previewWindow.close();
+                }
                 alert('No se pudo exportar el PDF en este navegador.');
             }
         }
