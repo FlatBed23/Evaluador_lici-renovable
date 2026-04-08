@@ -1410,7 +1410,7 @@
             <div id="tab-graficos" class="tab-content">
                 <h2 class="card-title">Visualización de Resultados</h2>
                 <div class="chart-export-row">
-                    <button class="btn btn-primary" onclick="exportarPDF()">📄 Exportar Reporte a PDF</button>
+                    <button class="btn btn-primary" id="btn-export-pdf">📄 Exportar Reporte a PDF</button>
                 </div>
                 <div class="chart-stack">
                     <div class="chart-card">
@@ -3378,6 +3378,31 @@ async function exportarPDF() {
 
         // Inicializar
         inicializarApp();
+    
+        function bindExportPdfButton() {
+            const btn = document.getElementById('btn-export-pdf');
+            if (!btn || btn.dataset.bound === '1') return;
+            btn.dataset.bound = '1';
+            btn.addEventListener('click', async function(ev) {
+                ev.preventDefault();
+                ev.stopPropagation();
+                const originalHtml = btn.innerHTML;
+                const originalDisabled = btn.disabled;
+                try {
+                    btn.disabled = true;
+                    btn.innerHTML = '⏳ Generando PDF…';
+                    await exportarPDF();
+                } finally {
+                    btn.disabled = originalDisabled;
+                    btn.innerHTML = originalHtml;
+                }
+            }, { passive: false });
+        }
+
+        document.addEventListener('DOMContentLoaded', bindExportPdfButton);
+        window.addEventListener('pageshow', bindExportPdfButton);
+        setTimeout(bindExportPdfButton, 300);
+
     </script>
 </body>
 </html>
