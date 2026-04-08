@@ -2918,7 +2918,7 @@
                 .reduce((s, o) => s + o.capacidadAsignada, 0);
             
             const egeHaina = adjudicados.filter(o => 
-                o.participante.includes('EGE Haina')
+                String(o.desarrollador || '').trim().toLowerCase() === 'ege haina'
             ).reduce((s, o) => s + o.capacidadAsignada, 0);
             
             return {
@@ -2930,6 +2930,27 @@
                 capacidadEGE: egeHaina,
                 porcentajeEGE: capacidadTotal > 0 ? (egeHaina / capacidadTotal * 100).toFixed(1) : '0.0'
             };
+        }
+
+        async function loadImageAsDataUrl(src) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                img.onload = () => {
+                    try {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = img.naturalWidth || img.width;
+                        canvas.height = img.naturalHeight || img.height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0);
+                        resolve(canvas.toDataURL('image/png'));
+                    } catch (err) {
+                        reject(err);
+                    }
+                };
+                img.onerror = reject;
+                img.src = src;
+            });
         }
 
         async function exportarPDF() {
@@ -2950,29 +2971,50 @@
                 await sleep(150);
 
                 // Página 1 - Portada
+                let pdfLogo = null;
                 try {
-                    doc.addImage(LOGO_EGE_HAINA, 'PNG', 20, 20, 60, 25);
+                    pdfLogo = await loadImageAsDataUrl('logo_egehaina.png');
                 } catch (e) {
-                    console.warn('No se pudo insertar el logo en el PDF.', e);
+                    try {
+                        pdfLogo = LOGO_EGE_HAINA;
+                    } catch (_) {}
+                    console.warn('No se pudo cargar el logo principal para el PDF.', e);
                 }
+
+                if (pdfLogo) {
+                    try {
+                        doc.addImage(pdfLogo, 'PNG', 20, 16, 72, 22);
+                    } catch (e) {
+                        console.warn('No se pudo insertar el logo en el PDF.', e);
+                    }
+                }
+
+                doc.setDrawColor(0, 89, 120);
+                doc.setLineWidth(0.8);
+                doc.line(20, 44, 190, 44);
+
+                doc.setTextColor(30, 70, 50);
                 doc.setFontSize(20);
                 doc.setFont(undefined, 'bold');
-                doc.text('Evaluación Licitación Renovable', 20, 60);
+                doc.text('Evaluación Licitación Renovable', 20, 56);
+                doc.setTextColor(0, 0, 0);
                 doc.setFontSize(16);
-                doc.text('EDES-LP-GR-01-2025', 20, 70);
+                doc.text('EDES-LP-GR-01-2025', 20, 66);
 
                 doc.setFontSize(11);
                 doc.setFont(undefined, 'normal');
-                doc.text(`Fecha: ${new Date().toLocaleDateString('es-DO')}`, 20, 85);
-                doc.text(`CMAX: ${cmax.toFixed(2)} MW`, 20, 92);
-                doc.text(`CMA: ${cma.toFixed(6)} US$/kWh`, 20, 99);
-                doc.text(`CMAinf: ${cmaInf.toFixed(6)} US$/kWh`, 20, 106);
+                doc.text(`Fecha: ${new Date().toLocaleDateString('es-DO')}`, 20, 81);
+                doc.text(`CMAX: ${cmax.toFixed(2)} MW`, 20, 88);
+                doc.text(`CMA: ${cma.toFixed(6)} US$/kWh`, 20, 95);
+                doc.text(`CMAinf: ${cmaInf.toFixed(6)} US$/kWh`, 20, 102);
 
                 // Página 2 - Resumen Ejecutivo
                 doc.addPage();
                 doc.setFontSize(16);
                 doc.setFont(undefined, 'bold');
+                doc.setTextColor(30, 70, 50);
                 doc.text('Resumen Ejecutivo', 20, 20);
+                doc.setTextColor(0, 0, 0);
 
                 doc.setFontSize(11);
                 doc.setFont(undefined, 'normal');
@@ -3002,7 +3044,9 @@
                 doc.addPage();
                 doc.setFontSize(16);
                 doc.setFont(undefined, 'bold');
+                doc.setTextColor(30, 70, 50);
                 doc.text('Proyectos Adjudicados', 20, 20);
+                doc.setTextColor(0, 0, 0);
 
                 const adjudicados = ofertas
                     .filter(o => o.estado === 'adjudicado' || o.estado === 'parcial')
@@ -3026,7 +3070,7 @@
                         didParseCell: function(data) {
                             if (data.row.index >= 0 && data.row.section === 'body') {
                                 const proyecto = adjudicados[data.row.index];
-                                if (proyecto && proyecto.participante.includes('EGE Haina')) {
+                                if (proyecto && String(proyecto.desarrollador || '').trim().toLowerCase() === 'ege haina') {
                                     data.cell.styles.fillColor = [240, 249, 244];
                                     data.cell.styles.textColor = [26, 77, 46];
                                     data.cell.styles.fontStyle = 'bold';
@@ -3043,7 +3087,9 @@
                 doc.addPage();
                 doc.setFontSize(16);
                 doc.setFont(undefined, 'bold');
+                doc.setTextColor(30, 70, 50);
                 doc.text('Curva de Oferta', 20, 20);
+                doc.setTextColor(0, 0, 0);
 
                 try {
                     if (meritChart && typeof meritChart.toBase64Image === 'function') {
@@ -3063,7 +3109,9 @@
                 doc.addPage();
                 doc.setFontSize(16);
                 doc.setFont(undefined, 'bold');
+                doc.setTextColor(30, 70, 50);
                 doc.text('Asignación por Proyecto', 20, 20);
+                doc.setTextColor(0, 0, 0);
 
                 try {
                     if (waterfallChart && typeof waterfallChart.toBase64Image === 'function') {
