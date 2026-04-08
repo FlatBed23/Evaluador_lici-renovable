@@ -2998,6 +2998,39 @@ async function exportarPDF() {
                     console.warn('No se pudo cargar el logo principal para el PDF.', e);
                 }
 
+                async function captureChartImage(chart) {
+                    if (!chart) throw new Error('Gráfico no disponible');
+                    const canvas = chart.canvas || (chart.ctx && chart.ctx.canvas);
+                    if (!canvas) throw new Error('Canvas no disponible');
+
+                    try { chart.resize(); } catch (_) {}
+                    try { chart.update('none'); } catch (_) {}
+                    await sleep(220);
+
+                    const width = canvas.width || canvas.clientWidth || 0;
+                    const height = canvas.height || canvas.clientHeight || 0;
+                    if (width <= 0 || height <= 0) throw new Error('Canvas sin tamaño válido');
+
+                    let dataUrl = '';
+                    try {
+                        if (typeof chart.toBase64Image === 'function') {
+                            dataUrl = chart.toBase64Image('image/png', 1) || '';
+                        }
+                    } catch (_) {}
+
+                    if (!dataUrl || dataUrl === 'data:,') {
+                        try {
+                            dataUrl = canvas.toDataURL('image/png', 1.0) || '';
+                        } catch (_) {}
+                    }
+
+                    if (!dataUrl || dataUrl === 'data:,') {
+                        throw new Error('No se pudo capturar el gráfico');
+                    }
+
+                    return dataUrl;
+                }
+
                 function addPdfHeader(titleText = '', sectionText = 'EDES-LP-GR-01-2025') {
                     if (pdfLogo) {
                         try {
@@ -3215,13 +3248,10 @@ async function exportarPDF() {
                 doc.setTextColor(0, 0, 0);
 
                 try {
-                    if (meritChart && typeof meritChart.toBase64Image === 'function') {
-                        const chartImg = meritChart.toBase64Image('image/png', 1);
-                        doc.addImage(chartImg, 'PNG', 20, 46, 170, 100);
-                    } else {
-                        throw new Error('Gráfico no disponible');
-                    }
+                    const chartImg = await captureChartImage(meritChart);
+                    doc.addImage(chartImg, 'PNG', 20, 46, 170, 100);
                 } catch (e) {
+                    console.error('Error curva oferta PDF:', e);
                     doc.setFontSize(11);
                     doc.text('Error al capturar gráfico de curva de oferta', 20, 56);
                 }
@@ -3236,13 +3266,10 @@ async function exportarPDF() {
                 doc.setTextColor(0, 0, 0);
 
                 try {
-                    if (waterfallChart && typeof waterfallChart.toBase64Image === 'function') {
-                        const waterfallImg = waterfallChart.toBase64Image('image/png', 1);
-                        doc.addImage(waterfallImg, 'PNG', 20, 46, 170, 100);
-                    } else {
-                        throw new Error('Gráfico no disponible');
-                    }
+                    const waterfallImg = await captureChartImage(waterfallChart);
+                    doc.addImage(waterfallImg, 'PNG', 20, 46, 170, 100);
                 } catch (e) {
+                    console.error('Error waterfall PDF:', e);
                     doc.setFontSize(11);
                     doc.text('Error al capturar gráfico waterfall', 20, 56);
                 }
