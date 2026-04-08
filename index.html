@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Evaluador Licitación Renovable EDES-LP-GR-01-2025 · v11</title>
+    <title>Evaluador Licitación Renovable EDES-LP-GR-01-2025 · v13.1</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -1275,11 +1275,11 @@
                         </div>
                         <div class="form-group">
                             <label>CMA (US$/kWh)</label>
-                            <input type="number" id="cma" value="0.120000" step="0.000001" inputmode="decimal">
+                            <input type="number" id="cma" value="0.131" step="0.000001" inputmode="decimal">
                         </div>
                         <div class="form-group">
                             <label>CMA<sub>inf</sub> (US$/kWh)</label>
-                            <input type="number" id="cma_inf" value="0.085000" step="0.000001" inputmode="decimal">
+                            <input type="number" id="cma_inf" value="0.093" step="0.000001" inputmode="decimal">
                         </div>
                     </div>
 
@@ -1452,8 +1452,8 @@
         let savedProjectsSnapshot = '[]';
 
         const STORAGE_KEYS = {
-            proyectos: 'evaluador_renovable_proyectos_v9',
-            parametros: 'evaluador_renovable_parametros_v9'
+            proyectos: 'evaluador_renovable_proyectos_v13_1',
+            parametros: 'evaluador_renovable_parametros_v13_1'
         };
 
         // Constantes
@@ -1464,282 +1464,282 @@
 
         // Plantilla base de proyectos
         const proyectosPlantilla = [
-            {
-                        "nombre": "Las Parras Energy",
-                        "desarrollador": "MEDCAP",
-                        "semifinalista": false,
-                        "tecnologia": "solar",
-                        "mwn": 248.4,
-                        "capacidadMin": 248.4,
-                        "besMW": 124.2,
-                        "besMWh": 496.8,
-                        "peo": 0.0881
-            },
-            {
-                        "nombre": "Dicayagua Solar Park",
-                        "desarrollador": "MAGNETAR",
-                        "semifinalista": true,
-                        "tecnologia": "solar",
-                        "mwn": 145.0,
-                        "capacidadMin": 145.0,
-                        "besMW": 72.5,
-                        "besMWh": 290.0,
-                        "peo": 0.1131
-            },
-            {
-                        "nombre": "Pimentel Energy",
-                        "desarrollador": "MEDCAP",
-                        "semifinalista": false,
-                        "tecnologia": "solar",
-                        "mwn": 119.6,
-                        "capacidadMin": 119.6,
-                        "besMW": 59.8,
-                        "besMWh": 239.2,
-                        "peo": 0.0987
-            },
-            {
-                        "nombre": "Mella Solar Project",
-                        "desarrollador": "Mella Solar Power",
-                        "semifinalista": true,
-                        "tecnologia": "solar",
-                        "mwn": 99.0,
-                        "capacidadMin": 99.0,
-                        "besMW": 49.5,
-                        "besMWh": 198.0,
-                        "peo": 0.1135
-            },
-            {
-                        "nombre": "Parque Solar Dominicana Azul II",
-                        "desarrollador": "Zenith",
-                        "semifinalista": true,
-                        "tecnologia": "solar",
-                        "mwn": 96.8,
-                        "capacidadMin": 96.8,
-                        "besMW": 48.4,
-                        "besMWh": 193.6,
-                        "peo": 0.1249
-            },
-            {
-                        "nombre": "Helios Solar Park",
-                        "desarrollador": "HELIOS",
-                        "semifinalista": false,
-                        "tecnologia": "solar",
-                        "mwn": 92.4,
-                        "capacidadMin": 92.4,
-                        "besMW": 46.2,
-                        "besMWh": 184.8,
-                        "peo": 0.122
-            },
-            {
-                        "nombre": "Parque Solar Taíno I",
-                        "desarrollador": "Taino",
-                        "semifinalista": true,
-                        "tecnologia": "solar",
-                        "mwn": 84.7,
-                        "capacidadMin": 84.7,
-                        "besMW": 42.35,
-                        "besMWh": 169.4,
-                        "peo": 0.1151
-            },
-            {
-                        "nombre": "Ardavin Solar",
-                        "desarrollador": "MAGNETAR",
-                        "semifinalista": true,
-                        "tecnologia": "solar",
-                        "mwn": 83.4,
-                        "capacidadMin": 83.4,
-                        "besMW": 41.7,
-                        "besMWh": 166.8,
-                        "peo": 0.1029
-            },
-            {
-                        "nombre": "Parque Solar Dominicana Azul",
-                        "desarrollador": "Zenith",
-                        "semifinalista": true,
-                        "tecnologia": "solar",
-                        "mwn": 82.9,
-                        "capacidadMin": 82.9,
-                        "besMW": 41.44,
-                        "besMWh": 165.76,
-                        "peo": 0.0978
-            },
-            {
-                        "nombre": "Peravia Solar II",
-                        "desarrollador": "AES",
-                        "semifinalista": true,
-                        "tecnologia": "solar",
-                        "mwn": 70.0,
-                        "capacidadMin": 70.0,
-                        "besMW": 35.0,
-                        "besMWh": 140.0,
-                        "peo": 0.0909
-            },
-            {
-                        "nombre": "Parque Solar Santa Clara",
-                        "desarrollador": "Santa Clara",
-                        "semifinalista": true,
-                        "tecnologia": "solar",
-                        "mwn": 67.7,
-                        "capacidadMin": 67.7,
-                        "besMW": 33.85,
-                        "besMWh": 135.4,
-                        "peo": 0.1098
-            },
-            {
-                        "nombre": "Parque Solar El Guincho",
-                        "desarrollador": "AKUO",
-                        "semifinalista": true,
-                        "tecnologia": "solar",
-                        "mwn": 65.0,
-                        "capacidadMin": 65.0,
-                        "besMW": 32.5,
-                        "besMWh": 130.0,
-                        "peo": 0.0846
-            },
-            {
-                        "nombre": "WCGFV - Mata de Palma",
-                        "desarrollador": "BASS - Dominion",
-                        "semifinalista": true,
-                        "tecnologia": "solar",
-                        "mwn": 54.6,
-                        "capacidadMin": 54.6,
-                        "besMW": 27.28,
-                        "besMWh": 109.12,
-                        "peo": 0.102
-            },
-            {
-                        "nombre": "Planta Solar Fotovoltaica Solsur",
-                        "desarrollador": "Solsur Company",
-                        "semifinalista": true,
-                        "tecnologia": "solar",
-                        "mwn": 50.0,
-                        "capacidadMin": 50.0,
-                        "besMW": 25.0,
-                        "besMWh": 100.0,
-                        "peo": 0.0985
-            },
-            {
-                        "nombre": "Parque Solar Montecristi II",
-                        "desarrollador": "Montecristi Solar FV",
-                        "semifinalista": false,
-                        "tecnologia": "solar",
-                        "mwn": 50.0,
-                        "capacidadMin": 50.0,
-                        "besMW": 25.0,
-                        "besMWh": 100.0,
-                        "peo": 0.1041
-            },
-            {
-                        "nombre": "Parque Solar Payita II",
-                        "desarrollador": "ECOENER",
-                        "semifinalista": true,
-                        "tecnologia": "solar",
-                        "mwn": 50.0,
-                        "capacidadMin": 50.0,
-                        "besMW": 24.99,
-                        "besMWh": 99.96,
-                        "peo": 0.0854
-            },
-            {
-                        "nombre": "Parque Eólico Esperanza",
-                        "desarrollador": "EGE Haina",
-                        "semifinalista": true,
-                        "tecnologia": "eolica",
-                        "mwn": 49.5,
-                        "capacidadMin": 49.5,
-                        "besMW": 25.0,
-                        "besMWh": 100.0,
-                        "peo": 0.0987
-            },
-            {
-                        "nombre": "Parque Solar Tornasol",
-                        "desarrollador": "EGE Haina",
-                        "semifinalista": true,
-                        "tecnologia": "solar",
-                        "mwn": 48.3,
-                        "capacidadMin": 48.3,
-                        "besMW": 25.0,
-                        "besMWh": 100.0,
-                        "peo": 0.1065
-            },
-            {
-                        "nombre": "Parque Solar Esperanza II",
-                        "desarrollador": "EGE Haina",
-                        "semifinalista": true,
-                        "tecnologia": "solar",
-                        "mwn": 48.3,
-                        "capacidadMin": 48.3,
-                        "besMW": 25.0,
-                        "besMWh": 100.0,
-                        "peo": 0.0867
-            },
-            {
-                        "nombre": "Parque Solar Girasol II",
-                        "desarrollador": "EGE Haina",
-                        "semifinalista": true,
-                        "tecnologia": "solar",
-                        "mwn": 48.3,
-                        "capacidadMin": 48.3,
-                        "besMW": 25.0,
-                        "besMWh": 100.0,
-                        "peo": 0.1055
-            },
-            {
-                        "nombre": "WCGFIV - Mata de Palma",
-                        "desarrollador": "BASS - Dominion",
-                        "semifinalista": true,
-                        "tecnologia": "solar",
-                        "mwn": 48.1,
-                        "capacidadMin": 48.1,
-                        "besMW": 24.06,
-                        "besMWh": 96.24,
-                        "peo": 0.0916
-            },
-            {
-                        "nombre": "Guayubin Solar I",
-                        "desarrollador": "BASS - Dominion",
-                        "semifinalista": true,
-                        "tecnologia": "solar",
-                        "mwn": 44.7,
-                        "capacidadMin": 44.7,
-                        "besMW": 22.34,
-                        "besMWh": 89.36,
-                        "peo": 0.1111
-            },
-            {
-                        "nombre": "Guayubin Solar II",
-                        "desarrollador": "BASS - Dominion",
-                        "semifinalista": false,
-                        "tecnologia": "solar",
-                        "mwn": 44.7,
-                        "capacidadMin": 44.7,
-                        "besMW": 22.34,
-                        "besMWh": 89.36,
-                        "peo": 0.0868
-            },
-            {
-                        "nombre": "Eco Sur (Parque Solar Eco Este)",
-                        "desarrollador": "RAAS SOLAR, S.R.L.",
-                        "semifinalista": true,
-                        "tecnologia": "solar",
-                        "mwn": 39.4,
-                        "capacidadMin": 39.4,
-                        "besMW": 19.71,
-                        "besMWh": 78.84,
-                        "peo": 0.1237
-            },
-            {
-                        "nombre": "Parque Fotovoltaico Botoncillo",
-                        "desarrollador": "Galileo Energia",
-                        "semifinalista": true,
-                        "tecnologia": "solar",
-                        "mwn": 44.2,
-                        "capacidadMin": 44.2,
-                        "besMW": 22.1,
-                        "besMWh": 88.4,
-                        "peo": 0.0896
-            }
-];
+                    {
+                                "nombre": "Las Parras Energy",
+                                "desarrollador": "MEDCAP",
+                                "semifinalista": false,
+                                "tecnologia": "solar",
+                                "mwn": 248.4,
+                                "capacidadMin": null,
+                                "besMW": 124.2,
+                                "besMWh": 496.8,
+                                "peo": null
+                    },
+                    {
+                                "nombre": "Dicayagua Solar Park",
+                                "desarrollador": "MAGNETAR",
+                                "semifinalista": true,
+                                "tecnologia": "solar",
+                                "mwn": 145,
+                                "capacidadMin": 125,
+                                "besMW": 72.5,
+                                "besMWh": 290,
+                                "peo": 0.1098
+                    },
+                    {
+                                "nombre": "Pimentel Energy",
+                                "desarrollador": "MEDCAP",
+                                "semifinalista": false,
+                                "tecnologia": "solar",
+                                "mwn": 119.6,
+                                "capacidadMin": null,
+                                "besMW": 59.8,
+                                "besMWh": 239.2,
+                                "peo": null
+                    },
+                    {
+                                "nombre": "Mella Solar Project",
+                                "desarrollador": "Mella Solar Power",
+                                "semifinalista": true,
+                                "tecnologia": "solar",
+                                "mwn": 116,
+                                "capacidadMin": 116,
+                                "besMW": 49.5,
+                                "besMWh": 198,
+                                "peo": 0.10698
+                    },
+                    {
+                                "nombre": "Parque Solar Dominicana Azul II",
+                                "desarrollador": "Zenith",
+                                "semifinalista": true,
+                                "tecnologia": "solar",
+                                "mwn": 96.8,
+                                "capacidadMin": 96.8,
+                                "besMW": 48.4,
+                                "besMWh": 193.6,
+                                "peo": 0.119969
+                    },
+                    {
+                                "nombre": "Helios Solar Park",
+                                "desarrollador": "HELIOS",
+                                "semifinalista": false,
+                                "tecnologia": "solar",
+                                "mwn": 92.4,
+                                "capacidadMin": null,
+                                "besMW": 46.2,
+                                "besMWh": 184.8,
+                                "peo": null
+                    },
+                    {
+                                "nombre": "Parque Solar Taíno I",
+                                "desarrollador": "Taino",
+                                "semifinalista": true,
+                                "tecnologia": "solar",
+                                "mwn": 84.7,
+                                "capacidadMin": 80,
+                                "besMW": 42.35,
+                                "besMWh": 169.4,
+                                "peo": 0.106
+                    },
+                    {
+                                "nombre": "Ardavin Solar",
+                                "desarrollador": "MAGNETAR",
+                                "semifinalista": true,
+                                "tecnologia": "solar",
+                                "mwn": 83.4,
+                                "capacidadMin": 83.1,
+                                "besMW": 41.7,
+                                "besMWh": 166.8,
+                                "peo": 0.1098
+                    },
+                    {
+                                "nombre": "Parque Solar Dominicana Azul",
+                                "desarrollador": "Zenith",
+                                "semifinalista": true,
+                                "tecnologia": "solar",
+                                "mwn": 82.88,
+                                "capacidadMin": 82.88,
+                                "besMW": 41.44,
+                                "besMWh": 165.76,
+                                "peo": 0.114269
+                    },
+                    {
+                                "nombre": "Peravia Solar II",
+                                "desarrollador": "AES",
+                                "semifinalista": true,
+                                "tecnologia": "solar",
+                                "mwn": 70,
+                                "capacidadMin": 70,
+                                "besMW": 35,
+                                "besMWh": 140,
+                                "peo": 0.127
+                    },
+                    {
+                                "nombre": "Parque Solar Santa Clara",
+                                "desarrollador": "Santa Clara",
+                                "semifinalista": true,
+                                "tecnologia": "solar",
+                                "mwn": 55,
+                                "capacidadMin": 55,
+                                "besMW": 33.85,
+                                "besMWh": 135.4,
+                                "peo": 0.11698
+                    },
+                    {
+                                "nombre": "Parque Solar El Guincho",
+                                "desarrollador": "AKUO",
+                                "semifinalista": true,
+                                "tecnologia": "solar",
+                                "mwn": 65,
+                                "capacidadMin": 65,
+                                "besMW": 32.5,
+                                "besMWh": 130,
+                                "peo": 0.1195
+                    },
+                    {
+                                "nombre": "WCGFV - Mata de Palma",
+                                "desarrollador": "BASS - Dominion",
+                                "semifinalista": true,
+                                "tecnologia": "solar",
+                                "mwn": 48.2,
+                                "capacidadMin": 48.2,
+                                "besMW": 27.28,
+                                "besMWh": 109.12,
+                                "peo": 0.11348
+                    },
+                    {
+                                "nombre": "Planta Solar Fotovoltaica Solsur",
+                                "desarrollador": "Solsur Company",
+                                "semifinalista": true,
+                                "tecnologia": "solar",
+                                "mwn": 50,
+                                "capacidadMin": 50,
+                                "besMW": 27.5,
+                                "besMWh": 100,
+                                "peo": 0.119
+                    },
+                    {
+                                "nombre": "Parque Solar Montecristi II",
+                                "desarrollador": "Montecristi Solar FV",
+                                "semifinalista": false,
+                                "tecnologia": "solar",
+                                "mwn": 50,
+                                "capacidadMin": null,
+                                "besMW": 25,
+                                "besMWh": 100,
+                                "peo": null
+                    },
+                    {
+                                "nombre": "Parque Solar Payita II",
+                                "desarrollador": "ECOENER",
+                                "semifinalista": true,
+                                "tecnologia": "solar",
+                                "mwn": 49.98,
+                                "capacidadMin": 20,
+                                "besMW": 25,
+                                "besMWh": 99.96,
+                                "peo": 0.1095
+                    },
+                    {
+                                "nombre": "Parque Eólico Esperanza",
+                                "desarrollador": "EGE Haina",
+                                "semifinalista": true,
+                                "tecnologia": "eolica",
+                                "mwn": 49.5,
+                                "capacidadMin": 49.5,
+                                "besMW": 25,
+                                "besMWh": 100,
+                                "peo": 0.118951
+                    },
+                    {
+                                "nombre": "Parque Solar Tornasol",
+                                "desarrollador": "EGE Haina",
+                                "semifinalista": true,
+                                "tecnologia": "solar",
+                                "mwn": 48.29,
+                                "capacidadMin": 48.29,
+                                "besMW": 25,
+                                "besMWh": 100,
+                                "peo": 0.123953
+                    },
+                    {
+                                "nombre": "Parque Solar Esperanza II",
+                                "desarrollador": "EGE Haina",
+                                "semifinalista": true,
+                                "tecnologia": "solar",
+                                "mwn": 48.29,
+                                "capacidadMin": 48.29,
+                                "besMW": 25,
+                                "besMWh": 100,
+                                "peo": 0.108952
+                    },
+                    {
+                                "nombre": "Parque Solar Girasol II",
+                                "desarrollador": "EGE Haina",
+                                "semifinalista": true,
+                                "tecnologia": "solar",
+                                "mwn": 48.29,
+                                "capacidadMin": 48.29,
+                                "besMW": 25,
+                                "besMWh": 100,
+                                "peo": 0.122954
+                    },
+                    {
+                                "nombre": "WCGFIV - Mata de Palma",
+                                "desarrollador": "BASS - Dominion",
+                                "semifinalista": true,
+                                "tecnologia": "solar",
+                                "mwn": 48.12,
+                                "capacidadMin": 48.12,
+                                "besMW": 24.06,
+                                "besMWh": 96.24,
+                                "peo": 0.11349
+                    },
+                    {
+                                "nombre": "Guayubin Solar I",
+                                "desarrollador": "BASS - Dominion",
+                                "semifinalista": true,
+                                "tecnologia": "solar",
+                                "mwn": 44.7,
+                                "capacidadMin": 44.68,
+                                "besMW": 22.34,
+                                "besMWh": 89.36,
+                                "peo": 0.118969
+                    },
+                    {
+                                "nombre": "Guayubin Solar II",
+                                "desarrollador": "BASS - Dominion",
+                                "semifinalista": false,
+                                "tecnologia": "solar",
+                                "mwn": 44.7,
+                                "capacidadMin": null,
+                                "besMW": 22.34,
+                                "besMWh": 89.36,
+                                "peo": null
+                    },
+                    {
+                                "nombre": "Eco Sur (Parque Solar Eco Este)",
+                                "desarrollador": "RAAS SOLAR, S.R.L.",
+                                "semifinalista": true,
+                                "tecnologia": "solar",
+                                "mwn": 39.4,
+                                "capacidadMin": 39.4,
+                                "besMW": 19.71,
+                                "besMWh": 78.84,
+                                "peo": 0.115
+                    },
+                    {
+                                "nombre": "Parque Fotovoltaico Botoncillo",
+                                "desarrollador": "Galileo Energia",
+                                "semifinalista": true,
+                                "tecnologia": "solar",
+                                "mwn": 44.2,
+                                "capacidadMin": 40,
+                                "besMW": 22.1,
+                                "besMWh": 88.4,
+                                "peo": 0.10645
+                    }
+        ];
 
         function crearProyectoDesdePlantilla(base, index) {
             const semifinalistaValor = typeof base.semifinalista === 'boolean'
@@ -2933,128 +2933,190 @@
         }
 
         async function exportarPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF('p', 'mm', 'a4');
-            
-            const metricas = calcularMetricas();
-            const cmax = parseFloat(document.getElementById('cmax').value);
-            const cma = parseFloat(document.getElementById('cma').value);
-            const cmaInf = parseFloat(document.getElementById('cma_inf').value);
-            
-            // Página 1 - Portada
-            doc.addImage(LOGO_EGE_HAINA, 'PNG', 20, 20, 60, 25);
-            doc.setFontSize(20);
-            doc.setFont(undefined, 'bold');
-            doc.text('Evaluación Licitación Renovable', 20, 60);
-            doc.setFontSize(16);
-            doc.text('EDES-LP-GR-01-2025', 20, 70);
-            
-            doc.setFontSize(11);
-            doc.setFont(undefined, 'normal');
-            doc.text(`Fecha: ${new Date().toLocaleDateString('es-DO')}`, 20, 85);
-            doc.text(`CMAX: ${cmax.toFixed(2)} MW`, 20, 92);
-            doc.text(`CMA: ${cma.toFixed(6)} US$/kWh`, 20, 99);
-            doc.text(`CMAinf: ${cmaInf.toFixed(6)} US$/kWh`, 20, 106);
-            
-            // Página 2 - Resumen Ejecutivo
-            doc.addPage();
-            doc.setFontSize(16);
-            doc.setFont(undefined, 'bold');
-            doc.text('Resumen Ejecutivo', 20, 20);
-            
-            doc.setFontSize(11);
-            doc.setFont(undefined, 'normal');
-            let y = 35;
-            doc.text(`Capacidad Total Adjudicada: ${metricas.capacidadTotal.toFixed(2)} MW`, 25, y);
-            y += 8;
-            doc.text(`Número de Proyectos Adjudicados: ${metricas.numeroProyectos}`, 25, y);
-            y += 8;
-            doc.text(`Precio Promedio Ponderado: ${metricas.precioPromedio.toFixed(6)} US$/kWh`, 25, y);
-            y += 8;
-            doc.text(`Mix Tecnológico:`, 25, y);
-            y += 7;
-            doc.text(`   - Solar: ${metricas.mixSolar}%`, 25, y);
-            y += 7;
-            doc.text(`   - Eólica: ${metricas.mixEolica}%`, 25, y);
-            y += 8;
-            doc.text(`Capacidad EGE Haina: ${metricas.capacidadEGE.toFixed(2)} MW (${metricas.porcentajeEGE}%)`, 25, y);
-            
-            if (metricas.capacidadTotal < 300) {
-                y += 12;
-                doc.setTextColor(255, 107, 53);
-                doc.text('⚠ FASE DE SUBASTA: Capacidad < 300 MW', 25, y);
-                doc.setTextColor(0, 0, 0);
-            }
-            
-            // Página 3 - Tabla de Resultados
-            doc.addPage();
-            doc.setFontSize(16);
-            doc.setFont(undefined, 'bold');
-            doc.text('Proyectos Adjudicados', 20, 20);
-            
-            const adjudicados = ofertas
-                .filter(o => o.estado === 'adjudicado' || o.estado === 'parcial')
-                .sort((a, b) => a.pce - b.pce);
-            
-            doc.autoTable({
-                head: [['#', 'Proyecto', 'PCE (US$/kWh)', 'Cap. (MW)']],
-                body: adjudicados.map((o, i) => [
-                    i+1, 
-                    o.participante, 
-                    o.pce.toFixed(6), 
-                    o.capacidadAsignada.toFixed(2)
-                ]),
-                startY: 30,
-                styles: { fontSize: 8, cellPadding: 2 },
-                headStyles: { fillColor: [26, 77, 46], textColor: [255, 255, 255], fontStyle: 'bold' },
-                columnStyles: {
-                    1: { cellWidth: 80 }
-                },
-                didParseCell: function(data) {
-                    // Resaltar proyectos EGE Haina
-                    if (data.row.index >= 0 && data.row.section === 'body') {
-                        const proyecto = adjudicados[data.row.index];
-                        if (proyecto && proyecto.participante.includes('EGE Haina')) {
-                            data.cell.styles.fillColor = [240, 249, 244];
-                            data.cell.styles.textColor = [26, 77, 46];
-                            data.cell.styles.fontStyle = 'bold';
-                        }
-                    }
+            try {
+                if (!window.jspdf || !window.jspdf.jsPDF) {
+                    alert('No se pudo cargar el generador de PDF en este navegador.');
+                    return;
                 }
-            });
-            
-            // Página 4 - Curva de Oferta
-            doc.addPage();
-            doc.setFontSize(16);
-            doc.setFont(undefined, 'bold');
-            doc.text('Curva de Oferta', 20, 20);
-            
-            try {
-                const chartImg = meritChart.toBase64Image();
-                doc.addImage(chartImg, 'PNG', 20, 30, 170, 100);
-            } catch (e) {
+
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF('p', 'mm', 'a4');
+                const metricas = calcularMetricas();
+                const cmax = parseFloat(document.getElementById('cmax').value);
+                const cma = parseFloat(document.getElementById('cma').value);
+                const cmaInf = parseFloat(document.getElementById('cma_inf').value);
+
+                const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+                await sleep(150);
+
+                // Página 1 - Portada
+                try {
+                    doc.addImage(LOGO_EGE_HAINA, 'PNG', 20, 20, 60, 25);
+                } catch (e) {
+                    console.warn('No se pudo insertar el logo en el PDF.', e);
+                }
+                doc.setFontSize(20);
+                doc.setFont(undefined, 'bold');
+                doc.text('Evaluación Licitación Renovable', 20, 60);
+                doc.setFontSize(16);
+                doc.text('EDES-LP-GR-01-2025', 20, 70);
+
                 doc.setFontSize(11);
                 doc.setFont(undefined, 'normal');
-                doc.text('Error al capturar gráfico de curva de oferta', 20, 40);
-            }
-            
-            // Página 5 - Waterfall
-            doc.addPage();
-            doc.setFontSize(16);
-            doc.setFont(undefined, 'bold');
-            doc.text('Asignación por Proyecto', 20, 20);
-            
-            try {
-                const waterfallImg = waterfallChart.toBase64Image();
-                doc.addImage(waterfallImg, 'PNG', 20, 30, 170, 100);
-            } catch (e) {
+                doc.text(`Fecha: ${new Date().toLocaleDateString('es-DO')}`, 20, 85);
+                doc.text(`CMAX: ${cmax.toFixed(2)} MW`, 20, 92);
+                doc.text(`CMA: ${cma.toFixed(6)} US$/kWh`, 20, 99);
+                doc.text(`CMAinf: ${cmaInf.toFixed(6)} US$/kWh`, 20, 106);
+
+                // Página 2 - Resumen Ejecutivo
+                doc.addPage();
+                doc.setFontSize(16);
+                doc.setFont(undefined, 'bold');
+                doc.text('Resumen Ejecutivo', 20, 20);
+
                 doc.setFontSize(11);
                 doc.setFont(undefined, 'normal');
-                doc.text('Error al capturar gráfico waterfall', 20, 40);
+                let y = 35;
+                doc.text(`Capacidad Total Adjudicada: ${metricas.capacidadTotal.toFixed(2)} MW`, 25, y);
+                y += 8;
+                doc.text(`Número de Proyectos Adjudicados: ${metricas.numeroProyectos}`, 25, y);
+                y += 8;
+                doc.text(`Precio Promedio Ponderado: ${metricas.precioPromedio.toFixed(6)} US$/kWh`, 25, y);
+                y += 8;
+                doc.text('Mix Tecnológico:', 25, y);
+                y += 7;
+                doc.text(`   - Solar: ${metricas.mixSolar}%`, 25, y);
+                y += 7;
+                doc.text(`   - Eólica: ${metricas.mixEolica}%`, 25, y);
+                y += 8;
+                doc.text(`Capacidad EGE Haina: ${metricas.capacidadEGE.toFixed(2)} MW (${metricas.porcentajeEGE}%)`, 25, y);
+
+                if (metricas.capacidadTotal < 300) {
+                    y += 12;
+                    doc.setTextColor(255, 107, 53);
+                    doc.text('⚠ FASE DE SUBASTA: Capacidad < 300 MW', 25, y);
+                    doc.setTextColor(0, 0, 0);
+                }
+
+                // Página 3 - Tabla de Resultados
+                doc.addPage();
+                doc.setFontSize(16);
+                doc.setFont(undefined, 'bold');
+                doc.text('Proyectos Adjudicados', 20, 20);
+
+                const adjudicados = ofertas
+                    .filter(o => o.estado === 'adjudicado' || o.estado === 'parcial')
+                    .sort((a, b) => a.pce - b.pce);
+
+                if (typeof doc.autoTable === 'function') {
+                    doc.autoTable({
+                        head: [['#', 'Proyecto', 'PCE (US$/kWh)', 'Cap. (MW)']],
+                        body: adjudicados.map((o, i) => [
+                            i + 1,
+                            o.participante,
+                            o.pce.toFixed(6),
+                            o.capacidadAsignada.toFixed(2)
+                        ]),
+                        startY: 30,
+                        styles: { fontSize: 8, cellPadding: 2 },
+                        headStyles: { fillColor: [30, 70, 50], textColor: [255, 255, 255], fontStyle: 'bold' },
+                        columnStyles: {
+                            1: { cellWidth: 80 }
+                        },
+                        didParseCell: function(data) {
+                            if (data.row.index >= 0 && data.row.section === 'body') {
+                                const proyecto = adjudicados[data.row.index];
+                                if (proyecto && proyecto.participante.includes('EGE Haina')) {
+                                    data.cell.styles.fillColor = [240, 249, 244];
+                                    data.cell.styles.textColor = [26, 77, 46];
+                                    data.cell.styles.fontStyle = 'bold';
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    doc.setFontSize(11);
+                    doc.text('No se pudo generar la tabla automática en este navegador.', 20, 35);
+                }
+
+                // Página 4 - Curva de Oferta
+                doc.addPage();
+                doc.setFontSize(16);
+                doc.setFont(undefined, 'bold');
+                doc.text('Curva de Oferta', 20, 20);
+
+                try {
+                    if (meritChart && typeof meritChart.toBase64Image === 'function') {
+                        const chartImg = meritChart.toBase64Image('image/png', 1);
+                        doc.addImage(chartImg, 'PNG', 20, 30, 170, 100);
+                    } else {
+                        throw new Error('Gráfico no disponible');
+                    }
+                } catch (e) {
+                    doc.setFontSize(11);
+                    doc.setFont(undefined, 'normal');
+                    doc.text('Error al capturar gráfico de curva de oferta', 20, 40);
+                    console.warn(e);
+                }
+
+                // Página 5 - Waterfall
+                doc.addPage();
+                doc.setFontSize(16);
+                doc.setFont(undefined, 'bold');
+                doc.text('Asignación por Proyecto', 20, 20);
+
+                try {
+                    if (waterfallChart && typeof waterfallChart.toBase64Image === 'function') {
+                        const waterfallImg = waterfallChart.toBase64Image('image/png', 1);
+                        doc.addImage(waterfallImg, 'PNG', 20, 30, 170, 100);
+                    } else {
+                        throw new Error('Gráfico no disponible');
+                    }
+                } catch (e) {
+                    doc.setFontSize(11);
+                    doc.setFont(undefined, 'normal');
+                    doc.text('Error al capturar gráfico waterfall', 20, 40);
+                    console.warn(e);
+                }
+
+                const filename = 'licitacion_renovable_resultados.pdf';
+                const blob = doc.output('blob');
+                const blobUrl = URL.createObjectURL(blob);
+
+                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+                const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+                if (isIOS || isSafari) {
+                    const win = window.open(blobUrl, '_blank');
+                    if (!win) {
+                        const a = document.createElement('a');
+                        a.href = blobUrl;
+                        a.target = '_blank';
+                        a.rel = 'noopener';
+                        a.download = filename;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                    }
+                    setTimeout(() => {
+                        URL.revokeObjectURL(blobUrl);
+                    }, 60000);
+                    return;
+                }
+
+                const link = document.createElement('a');
+                link.href = blobUrl;
+                link.download = filename;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                setTimeout(() => {
+                    URL.revokeObjectURL(blobUrl);
+                }, 10000);
+            } catch (error) {
+                console.error('Error exportando PDF:', error);
+                alert('No se pudo generar el PDF en este momento.');
             }
-            
-            // Guardar
-            doc.save('licitacion_renovable_resultados.pdf');
         }
 
         function switchTab(tabName, tabButton) {
